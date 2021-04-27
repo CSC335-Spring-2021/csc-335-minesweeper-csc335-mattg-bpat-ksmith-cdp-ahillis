@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -71,6 +72,13 @@ public class MinesweeperView extends Application {
 			}
 		
 		}
+		board.setOnMousePressed(e->clickOnGrid(e));
+	}
+	
+	private void clickOnGrid(MouseEvent e) {
+        double x = e.getSceneX();
+        double y = e.getSceneY();
+        System.out.println("(x-y): "+e.getSceneX()+"-"+e.getSceneY());
 	}
 
 }
