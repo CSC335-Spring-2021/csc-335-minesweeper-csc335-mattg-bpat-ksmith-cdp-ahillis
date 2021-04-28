@@ -26,7 +26,7 @@ public class MinesweeperModel extends Observable {
 		for(int r = 0; r < totalRows; r++) {
 			for(int c = 0; c < totalCols; c++) {
 				mines[r][c] = 0;
-				cellStates[r][c] = "uncovered";
+				cellStates[r][c] = "covered";
 			}
 		}
 		

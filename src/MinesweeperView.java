@@ -15,6 +15,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -43,6 +44,7 @@ public class MinesweeperView extends Application implements Observer {
 	private File savedGame;
 	private boolean fileExists;
 	private ArrayList<ArrayList<StackPane>> grid = new ArrayList<ArrayList<StackPane>>();
+	int count = 0;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -88,12 +90,30 @@ public class MinesweeperView extends Application implements Observer {
 		board.setOnMouseClicked((event) -> {
 			int x = getIndexFromPosition(event.getX());
 			int y = getIndexFromPosition(event.getY());
-			
 			System.out.println("(x, y): " + x + ", " + y);
+			if (count == 0) {
+				model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
+				model.addObserver(this);
+				controller = new MinesweeperController(model);// add model to () when its more done
+				while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), x, y)) {
+					model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
+					model.addObserver(this);
+					controller = new MinesweeperController(model);// add model to () when its more done
+				}
+				controller.updateMineBoard();
+				count++;
+			}
+			
 			
 			// TODO: Complete turn, including mine checking
 			
-			model.updateCellState(x, y, "covered"); // Will need to use controller, using model for demonstration purposes
+			if (event.getButton() == MouseButton.SECONDARY) {
+				model.updateCellState(y, x, "flagged");
+			}
+			else {
+				model.updateCellState(y, x, "uncovered");
+				controller.clicked(x, y);
+			} // Will need to use controller, using model for demonstration purposes
 		});
 		
 		model.sendUpdate();
@@ -115,12 +135,12 @@ public class MinesweeperView extends Application implements Observer {
 		// update current state of board
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 20; j++) {
-				Rectangle square = (Rectangle) grid.get(i).get(j).getChildren().get(0);
+				Rectangle square = (Rectangle) grid.get(j).get(i).getChildren().get(0);
 				switch (model.cellStateAtCoords(i, j)) {
-				case "uncovered":
+				case "covered":
 					square.setFill(Color.LIGHTBLUE);
 					break;
-				case "covered":
+				case "uncovered":
 					square.setFill(Color.GRAY);
 					break;
 				case "flagged":
