@@ -1,14 +1,19 @@
 import java.io.File;
+import java.util.Observable;
 import java.util.Observer;
-
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -24,10 +29,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import model.MinesweeperBoard;
 import model.MinesweeperModel;
 import controller.MinesweeperController;
 
-public class MinesweeperView extends Application {
+@SuppressWarnings("deprecation")
+public class MinesweeperView extends Application implements Observer {
 	
 	private MinesweeperModel model;
 	private MinesweeperController controller;
@@ -79,6 +86,20 @@ public class MinesweeperView extends Application {
         double x = e.getSceneX();
         double y = e.getSceneY();
         System.out.println("(x-y): "+e.getSceneX()+"-"+e.getSceneY());
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		MinesweeperModel model = (MinesweeperModel) o;
+		MinesweeperBoard board = (MinesweeperBoard) arg;
+		
+		// update current state of board
+		
+
+		// update ScoreCard
+
+		// check if game over
+		
 	}
 
 }
