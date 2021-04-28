@@ -1,6 +1,6 @@
 package controller;
 
-import model.MinesweeperModel;
+import model.MinesweeperModel; 
 
 public class MinesweeperController {
 	
