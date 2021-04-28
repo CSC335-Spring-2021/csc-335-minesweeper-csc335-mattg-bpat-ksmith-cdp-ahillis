@@ -1,4 +1,4 @@
-package controller;
+package controller; 
 
 public class MinesweeperController {
 	public void setBoardSize(int n, int m) {
