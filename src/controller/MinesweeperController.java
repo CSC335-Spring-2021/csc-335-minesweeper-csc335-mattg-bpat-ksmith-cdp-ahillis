@@ -1,6 +1,15 @@
 package controller; 
 
+import model.MinesweeperModel; 
+
 public class MinesweeperController {
+	
+	private MinesweeperModel model;
+	
+	public MinesweeperController(MinesweeperModel model) {
+		this.model = model;
+	}
+	
 	public void setBoardSize(int n, int m) {
 		//model.setBoardSize(n, m);
 	}
