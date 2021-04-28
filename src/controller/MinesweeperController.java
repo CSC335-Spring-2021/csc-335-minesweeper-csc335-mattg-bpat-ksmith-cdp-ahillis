@@ -46,25 +46,25 @@ public class MinesweeperController {
 		// TODO Auto-generated method stub
 		int retval = 0;
 		// check top othog
-		if (row-1 > 0 && row-1 < numsBoard.length) {
+		if (row > 0) {
 			if (numsBoard[row-1][col] == -1) {
 				retval+=1;
 			}
 		}
 		// check right othog
-		if (col+1 < numsBoard[col].length && col+1 > 0) {
+		if (col+1 < numsBoard[col].length) {
 			if (numsBoard[row][col+1] == -1) {
 				retval+=1;
 			}
 		}
 		// check left othog
-		if (col-1 < numsBoard[col].length && col-1 > 0) {
+		if (col > 0) {
 			if (numsBoard[row][col-1] == -1) {
 				retval+=1;
 			}
 		}
 		// checks bottom othog
-		if (row+1 > 0 && row+1 < numsBoard.length-1) {
+		if (row+1 < numsBoard.length) {
 			if (numsBoard[row+1][col] == -1) {
 				retval+=1;
 			}
@@ -76,25 +76,25 @@ public class MinesweeperController {
 		// TODO Auto-generated method stub
 		int retval = 0;
 		// check top left diag
-		if (row-1 > 0 && row-1 < numsBoard.length && col-1 < numsBoard[col].length && col-1 > 0) {
+		if (row > 0 && col > 0) {
 			if (numsBoard[row-1][col-1] == -1) {
 				retval+=1;
 			}
 		}
 		// check top right diag
-		if (row-1 > 0 && row-1 < numsBoard.length && col+1 < numsBoard[col].length && col+1 > 0) {
+		if (row > 0 && col+1 < numsBoard[col].length) {
 			if (numsBoard[row-1][col+1] == -1) {
 				retval+=1;
 			}
 		}
 		// check bottom left diag
-		if (row+1 > 0 && row+1 < numsBoard.length && col-1 < numsBoard[col].length && col-1 > 0) {
+		if (row+1 < numsBoard.length && col > 0) {
 			if (numsBoard[row+1][col-1] == -1) {
 				retval+=1;
 			}
 		}
 		// checks bottom right diag
-		if (row+1 > 0 && row+1 < numsBoard.length-1 && col+1 < numsBoard[col].length && col+1 > 0) {
+		if (row+1 < numsBoard.length && col+1 < numsBoard[col].length) {
 			if (numsBoard[row+1][col+1] == -1) {
 				retval+=1;
 			}
