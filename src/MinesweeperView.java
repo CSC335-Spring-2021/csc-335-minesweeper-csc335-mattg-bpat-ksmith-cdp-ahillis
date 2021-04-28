@@ -38,7 +38,7 @@ public class MinesweeperView extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		
-		model = new MinesweeperModel();
+		model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
 		controller = new MinesweeperController(); // add model to () when its more done
 		stage.setTitle("Minesweeper");
 		BackgroundFill backgroundTan = new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY) ;
