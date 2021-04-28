@@ -4,7 +4,7 @@ import model.MinesweeperModel;
 
 public class MinesweeperController {
 	
-	private MinesweeperModel model;
+	private MinesweeperModel model; 
 	
 	public MinesweeperController(MinesweeperModel model) {
 		this.model = model;
