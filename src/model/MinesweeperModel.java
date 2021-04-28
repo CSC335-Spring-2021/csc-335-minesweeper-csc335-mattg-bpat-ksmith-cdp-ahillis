@@ -1,10 +1,12 @@
 package model;
 
 import java.util.HashSet;
+import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
 
-public class MinesweeperModel {
+@SuppressWarnings("deprecation")
+public class MinesweeperModel extends Observable {
 	
 	private int[][] mines;
 	private String[][] cellStates;
@@ -44,8 +46,14 @@ public class MinesweeperModel {
 		}
 	}
 	
+	public void sendUpdate() {
+		setChanged();
+		notifyObservers();
+	}
+	
 	public void updateCellState(int row, int col, String newStr) {
 		cellStates[row][col] = newStr;
+		sendUpdate();
 	}
 	
 	public void updateMine(int row, int col, int newNum) {
