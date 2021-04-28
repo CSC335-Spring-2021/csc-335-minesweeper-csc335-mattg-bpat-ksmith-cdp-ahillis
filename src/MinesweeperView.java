@@ -49,7 +49,7 @@ public class MinesweeperView extends Application implements Observer {
 		
 		model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
 		model.addObserver(this);
-		controller = new MinesweeperController(); // add model to () when its more done
+		controller = new MinesweeperController(model); // add model to () when its more done
 		stage.setTitle("Minesweeper");
 		BackgroundFill backgroundTan = new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY) ;
 		Background background = new Background(backgroundTan);

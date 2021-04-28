@@ -1,6 +1,15 @@
-package controller; 
+package controller;
+
+import model.MinesweeperModel;
 
 public class MinesweeperController {
+	
+	private MinesweeperModel model;
+	
+	public MinesweeperController(MinesweeperModel theModel) {
+		model = theModel;
+	}
+	
 	public void setBoardSize(int n, int m) {
 		//model.setBoardSize(n, m);
 	}
@@ -99,5 +108,80 @@ public class MinesweeperController {
 			}
 		}
 		return true;
+	}
+	
+	public void clicked(int x, int y) {
+		model.updateCellState(x, y, "uncovered");
+		if (model.mineAtCoords(x, y) == 0) {
+			uncoverAroundZero(x, y);
+		}
+	}
+	
+	public void uncoverAroundZero(int x, int y){
+		model.updateCellState(x, y, "uncovered");
+		if (x != 0) {
+			if (model.mineAtCoords(x-1 , y) == 0) {
+				uncoverAroundZero(x-1, y);
+			}
+			else {
+				model.updateCellState(x-1, y, "uncovered");
+			}
+		}
+		if (x != 0 && y != 19) {
+			if (model.mineAtCoords(x-1 , y + 1) == 0) {
+				uncoverAroundZero(x-1, y + 1);
+			}
+			else {
+				model.updateCellState(x-1, y+1, "uncovered");
+			}
+		}
+		if (y != 19) {
+			if (model.mineAtCoords(x , y + 1) == 0) {
+				uncoverAroundZero(x, y + 1);
+			}
+			else {
+				model.updateCellState(x, y+1, "uncovered");
+			}
+		}
+		if (x != 19 && y != 19) {
+			if (model.mineAtCoords(x + 1, y + 1) == 0) {
+				uncoverAroundZero(x+1, y + 1);
+			}
+			else {
+				model.updateCellState(x+1, y+1, "uncovered");
+			}
+		}
+		if (x != 19) {
+			if (model.mineAtCoords(x + 1, y) == 0) {
+				uncoverAroundZero(x+1, y);
+			}
+			else {
+				model.updateCellState(x+1, y, "uncovered");
+			}
+		}
+		if (x != 19 && y != 0) {
+			if (model.mineAtCoords(x + 1, y -1) == 0) {
+				uncoverAroundZero(x+1, y-1);
+			}
+			else {
+				model.updateCellState(x+1, y-1, "uncovered");
+			}
+		}
+		if (y != 0) {
+			if (model.mineAtCoords(x, y -1) == 0) {
+				uncoverAroundZero(x, y-1);
+			}
+			else {
+				model.updateCellState(x, y-1, "uncovered");
+			}
+		}
+		if (y != 0 && x !=0) {
+			if (model.mineAtCoords(x-1, y -1) == 0) {
+				uncoverAroundZero(x-1, y-1);
+			}
+			else {
+				model.updateCellState(x-1, y-1, "uncovered");
+			}
+		}
 	}
 }
