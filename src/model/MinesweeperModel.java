@@ -53,6 +53,7 @@ public class MinesweeperModel extends Observable {
 	
 	public void updateCellState(int row, int col, String newStr) {
 		cellStates[row][col] = newStr;
+		sendUpdate();
 	}
 	
 	public void updateMine(int row, int col, int newNum) {
