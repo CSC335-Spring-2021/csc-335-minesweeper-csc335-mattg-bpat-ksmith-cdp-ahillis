@@ -15,6 +15,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -93,7 +94,12 @@ public class MinesweeperView extends Application implements Observer {
 			
 			// TODO: Complete turn, including mine checking
 			
-			model.updateCellState(x, y, "covered"); // Will need to use controller, using model for demonstration purposes
+			if (event.getButton() == MouseButton.SECONDARY) {
+				model.updateCellState(x, y, "flagged");
+			}
+			else {
+				model.updateCellState(x, y, "covered");
+			} // Will need to use controller, using model for demonstration purposes
 		});
 		
 		model.sendUpdate();
