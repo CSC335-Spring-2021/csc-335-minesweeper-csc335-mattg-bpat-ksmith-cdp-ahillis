@@ -138,7 +138,6 @@ public class MinesweeperView extends Application implements Observer {
 	public void update(Observable o, Object arg) {
 		MinesweeperModel model = (MinesweeperModel) o;
 		// MinesweeperBoard board = (MinesweeperBoard) arg;
-		
 		// update current state of board
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 20; j++) {

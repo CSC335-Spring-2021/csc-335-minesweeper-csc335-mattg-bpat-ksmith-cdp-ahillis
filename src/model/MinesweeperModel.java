@@ -15,6 +15,7 @@ public class MinesweeperModel extends Observable {
 	private int totalCols;
 	private int totalBombs;
 	
+	
 	public MinesweeperModel(int rowAmount, int colAmount, int bombAmount) {
 		mines = new int[rowAmount][colAmount];
 		cellStates = new String[rowAmount][colAmount];

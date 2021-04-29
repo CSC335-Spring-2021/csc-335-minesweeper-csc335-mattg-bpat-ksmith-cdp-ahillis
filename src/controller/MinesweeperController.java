@@ -4,8 +4,7 @@ import model.MinesweeperModel;
 
 import model.MinesweeperModel; 
 
-public class MinesweeperController {
-	
+public class MinesweeperController {	
 		
 	private MinesweeperModel model; 
 	
@@ -129,12 +128,10 @@ public class MinesweeperController {
 		model.updateCellState(row, col, "uncovered");
 		if (model.mineAtCoords(row, col) == 0) {
 			uncoverAroundZero(row, col);
-			System.out.println("XX");
 		}
 	}
 	
 	public void uncoverAroundZero(int x, int y){
-		System.out.println("X:Y" + x + " : " + y);
 		model.updateCellState(x, y, "uncovered");
 		if (x != 0) {
 			if (model.returnCellStateBoard()[x-1][y].equals("covered"))
