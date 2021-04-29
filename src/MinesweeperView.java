@@ -30,6 +30,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.MinesweeperBoard;
 import model.MinesweeperModel;
@@ -93,13 +94,12 @@ public class MinesweeperView extends Application implements Observer {
 			System.out.println("(x, y): " + x + ", " + y);
 			if (count == 0) {
 				model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
-				model.addObserver(this);
 				controller = new MinesweeperController(model);// add model to () when its more done
-				while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), x, y)) {
+				while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), y, x)) {
 					model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
-					model.addObserver(this);
 					controller = new MinesweeperController(model);// add model to () when its more done
 				}
+				model.addObserver(this);
 				controller.updateMineBoard();
 				count++;
 			}
@@ -108,7 +108,14 @@ public class MinesweeperView extends Application implements Observer {
 			// TODO: Complete turn, including mine checking
 			
 			if (event.getButton() == MouseButton.SECONDARY) {
-				model.updateCellState(y, x, "flagged");
+				if (! model.cellStateAtCoords(y, x).equals("uncovered")) {
+					if (model.cellStateAtCoords(y, x).equals("flagged")) {
+						model.updateCellState(y, x, "covered");
+					}
+					else {
+					model.updateCellState(y, x, "flagged");
+					}
+				}
 			}
 			else {
 				model.updateCellState(y, x, "uncovered");
@@ -141,7 +148,16 @@ public class MinesweeperView extends Application implements Observer {
 					square.setFill(Color.LIGHTBLUE);
 					break;
 				case "uncovered":
-					square.setFill(Color.GRAY);
+					square.setFill(Color.TRANSPARENT);
+					Text text = new Text();
+					if (model.mineAtCoords(i, j) > 0) {
+						text.setText(String.valueOf(model.mineAtCoords(i, j)));
+						grid.get(j).get(i).getChildren().add(text);
+					}
+					else if (model.mineAtCoords(i, j) < 0) {
+						text.setText("*");
+						grid.get(j).get(i).getChildren().add(text);
+					}
 					break;
 				case "flagged":
 					square.setFill(Color.RED);
