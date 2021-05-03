@@ -127,7 +127,7 @@ public class MinesweeperView extends Application implements Observer {
 			} // Will need to use controller, using model for demonstration purposes
 		});
 		
-		model.sendUpdate();
+		model.sendUpdate(); //
 	}
 	
 	private int getIndexFromPosition(double position) {
@@ -171,12 +171,9 @@ public class MinesweeperView extends Application implements Observer {
 		}
 		
 		// check if game over
-		//if (){
-		// lose()
-		//}
-		//else if() {
-		//	win()
-		//}
+		if(controller.isWon(model.returnMinesBoard(), model.returnCellStateBoard())) {
+			win();
+		}
 		
 	}
 	
