@@ -95,7 +95,8 @@ public class MinesweeperView extends Application implements Observer {
 			if (count == 0) {
 				model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
 				controller = new MinesweeperController(model);// add model to () when its more done
-				while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), y, x)) {
+				//while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), y, x)) {
+				while (model.isMineLocation(y, x)) {
 					model = new MinesweeperModel(20, 20, 40); // 20x20, with 40 bombs (~10% of the board)
 					controller = new MinesweeperController(model);// add model to () when its more done
 				}
@@ -120,6 +121,9 @@ public class MinesweeperView extends Application implements Observer {
 			else {
 				model.updateCellState(y, x, "uncovered");
 				controller.clicked(x, y);
+				if (model.isMineLocation(y,x)) {
+					lose();
+				}
 			} // Will need to use controller, using model for demonstration purposes
 		});
 		
@@ -165,10 +169,37 @@ public class MinesweeperView extends Application implements Observer {
 				}
 			}
 		}
-
-
-		// check if game over
 		
+		// check if game over
+		//if (){
+		// lose()
+		//}
+		//else if() {
+		//	win()
+		//}
+		
+	}
+	
+	/**
+	 * Displays an alert in the case that the player wins at the end of the game.
+	 */
+	private void win() {
+		Alert b = new Alert(Alert.AlertType.INFORMATION);
+		b.setTitle("Message");
+		b.setContentText("You uncovered all the correct mines. You Won!");
+		b.setHeaderText("Victory");
+		b.showAndWait();
+	}
+	
+	/**
+	 * Displays an alert in the case that the player loses at the end of the game.
+	 */
+	private void lose() {
+		Alert a = new Alert(Alert.AlertType.INFORMATION);
+		a.setTitle("Message");
+		a.setContentText("You uncovered a mine. You lose!");
+		a.setHeaderText("Game Over");
+		a.showAndWait();
 	}
 
 }

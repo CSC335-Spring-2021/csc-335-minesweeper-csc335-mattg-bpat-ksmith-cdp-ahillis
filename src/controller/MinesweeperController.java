@@ -6,10 +6,14 @@ import model.MinesweeperModel;
 
 public class MinesweeperController {	
 		
-	private MinesweeperModel model; 
+	private MinesweeperModel model;
+	private int[][] mines;
+	private String[][] cellStates;
 	
 	public MinesweeperController(MinesweeperModel model) {
 		this.model = model;
+		mines = model.returnMinesBoard();
+		cellStates = model.returnCellStateBoard();
 	}
 	
 	public void setBoardSize(int n, int m) {
