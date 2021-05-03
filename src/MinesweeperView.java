@@ -222,7 +222,7 @@ public class MinesweeperView extends Application implements Observer {
 		time.setText(String.valueOf(seconds));
 		window.setBottom(time);
 		//Scene scene = new Scene (window, 556, 584);
-		Scene scene = new Scene (window, size * 27 + 16, size * 27 + 44);
+		Scene scene = new Scene (window, size * 27 + 16, size * 27 + 59);
 		stage.setScene(scene);
 		stage.show();
 		stage.setOnCloseRequest(e -> {
