@@ -20,8 +20,8 @@ public class MinesweeperController {
 		//model.setBoardSize(n, m);
 	}
 	
-	public boolean isMine(int[][] numsBoard, String[][] coversBoard, int row, int col) {
-		if (numsBoard[row][col] == -1 && (coversBoard[row][col].equals("covered") || coversBoard[row][col].equals("flagged"))) { // might need to change depending on what values are inside covers array
+	public boolean isMine(int row, int col) {
+		if (mines[row][col] == -1 && (cellStates[row][col].equals("covered") || cellStates[row][col].equals("flagged"))) { // might need to change depending on what values are inside covers array
 			return true;
 		}
 		return false;
@@ -31,7 +31,7 @@ public class MinesweeperController {
 		for (int i = 0; i < model.returnMinesBoard().length; i++) {
 			for (int j = 0; j < model.returnMinesBoard()[i].length; j++) {
 				if (model.returnMinesBoard()[i][j] != -1) {
-					 int x = numMinesAroundCell(model.returnMinesBoard(), i, j);
+					 int x = numMinesAroundCell(i, j);
 					 model.updateMine(i, j, x);
 				}
 			}
@@ -39,76 +39,76 @@ public class MinesweeperController {
 		model.printBoards();
 	}
 	
-	public int numMinesAroundCell(int[][] numsBoard, int row, int col) {
-		int diagonals = checkDiagonals(numsBoard, row, col);
-		int othogs = checkOthog(numsBoard, row, col);
+	public int numMinesAroundCell(int row, int col) {
+		int diagonals = checkDiagonals( row, col);
+		int othogs = checkOthog(row, col);
 		return diagonals + othogs;
 	}
 
-	private int checkOthog(int[][] numsBoard, int row, int col) {
+	private int checkOthog(int row, int col) {
 		// TODO Auto-generated method stub
 		int retval = 0;
 		// check top othog
 		if (row > 0) {
-			if (numsBoard[row-1][col] == -1) {
+			if (mines[row-1][col] == -1) {
 				retval+=1;
 			}
 		}
 		// check right othog
-		if (col+1 < numsBoard[col].length) {
-			if (numsBoard[row][col+1] == -1) {
+		if (col+1 < mines[col].length) {
+			if (mines[row][col+1] == -1) {
 				retval+=1;
 			}
 		}
 		// check left othog
 		if (col > 0) {
-			if (numsBoard[row][col-1] == -1) {
+			if (mines[row][col-1] == -1) {
 				retval+=1;
 			}
 		}
 		// checks bottom othog
-		if (row+1 < numsBoard.length) {
-			if (numsBoard[row+1][col] == -1) {
+		if (row+1 < mines.length) {
+			if (mines[row+1][col] == -1) {
 				retval+=1;
 			}
 		}
 		return retval;
 	}
 
-	private int checkDiagonals(int[][] numsBoard, int row, int col) {
+	private int checkDiagonals(int row, int col) {
 		// TODO Auto-generated method stub
 		int retval = 0;
 		// check top left diag
 		if (row > 0 && col > 0) {
-			if (numsBoard[row-1][col-1] == -1) {
+			if (mines[row-1][col-1] == -1) {
 				retval+=1;
 			}
 		}
 		// check top right diag
-		if (row > 0 && col+1 < numsBoard[col].length) {
-			if (numsBoard[row-1][col+1] == -1) {
+		if (row > 0 && col+1 < mines[col].length) {
+			if (mines[row-1][col+1] == -1) {
 				retval+=1;
 			}
 		}
 		// check bottom left diag
-		if (row+1 < numsBoard.length && col > 0) {
-			if (numsBoard[row+1][col-1] == -1) {
+		if (row+1 < mines.length && col > 0) {
+			if (mines[row+1][col-1] == -1) {
 				retval+=1;
 			}
 		}
 		// checks bottom right diag
-		if (row+1 < numsBoard.length && col+1 < numsBoard[col].length) {
-			if (numsBoard[row+1][col+1] == -1) {
+		if (row+1 < mines.length && col+1 < mines[col].length) {
+			if (mines[row+1][col+1] == -1) {
 				retval+=1;
 			}
 		}
 		return retval;
 	}
 	
-	public boolean isGameOver(int[][] numsBoard, String[][] coversBoard) {
-		for (int i = 0; i < numsBoard.length; i++) {
-			for (int j = 0; j < numsBoard[i].length; j++) {
-				if (numsBoard[i][j] != -1 && coversBoard[i][j].equals("covered")) {
+	public boolean isGameOver() {
+		for (int i = 0; i < mines.length; i++) {
+			for (int j = 0; j < mines[i].length; j++) {
+				if (mines[i][j] != -1 && cellStates[i][j].equals("covered")) {
 					return false;
 				}
 			}
@@ -117,10 +117,10 @@ public class MinesweeperController {
 		return true;
 	}
 	
-	public boolean isWon(int[][] numsBoard, String[][] coversBoard) {
-		for (int i = 0; i < numsBoard.length; i++) {
-			for (int j = 0; j < numsBoard[i].length; j++) {
-				if (numsBoard[i][j] != -1) {
+	public boolean isWon() {
+		for (int i = 0; i < mines.length; i++) {
+			for (int j = 0; j < mines[i].length; j++) {
+				if (cellStates[i][j].equals("covered")) {
 					return false;
 				}
 			}
