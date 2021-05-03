@@ -128,68 +128,68 @@ public class MinesweeperController {
 		return true;
 	}
 	
-	public void clicked(int col, int row) {
+	public void clicked(int col, int row, int size) {
 		model.updateCellState(row, col, "uncovered");
 		if (model.mineAtCoords(row, col) == 0) {
-			uncoverAroundZero(row, col);
+			uncoverAroundZero(row, col, size);
 		}
 	}
 	
-	public void uncoverAroundZero(int x, int y){
+	public void uncoverAroundZero(int x, int y, int size){
 		model.updateCellState(x, y, "uncovered");
 		if (x != 0) {
 			if (model.returnCellStateBoard()[x-1][y].equals("covered"))
 				if (model.mineAtCoords(x-1 , y) == 0) {
-					uncoverAroundZero(x-1, y);
+					uncoverAroundZero(x-1, y, size);
 				}
 				else {
 					model.updateCellState(x-1, y, "uncovered");
 				}
 		}
-		if (x != 0 && y != 19) {
+		if (x != 0 && y != size - 1) {
 			if (model.returnCellStateBoard()[x-1][y+1].equals("covered")) {
 				if (model.mineAtCoords(x-1 , y + 1) == 0) {
-					uncoverAroundZero(x-1, y + 1);
+					uncoverAroundZero(x-1, y + 1, size);
 				}
 				else {
 					model.updateCellState(x-1, y+1, "uncovered");
 				}
 			}
 		}
-		if (y != 19) {
+		if (y != size-1) {
 			if (model.returnCellStateBoard()[x][y+1].equals("covered")) {
 				if (model.mineAtCoords(x , y + 1) == 0) {
-					uncoverAroundZero(x, y + 1);
+					uncoverAroundZero(x, y + 1, size);
 				}
 				else {
 					model.updateCellState(x, y+1, "uncovered");
 				}
 			}
 		}
-		if (x != 19 && y != 19) {
+		if (x != size-1 && y != size-1) {
 			if (model.returnCellStateBoard()[x+1][y+1].equals("covered")) {
 				if (model.mineAtCoords(x + 1, y + 1) == 0) {
-					uncoverAroundZero(x+1, y + 1);
+					uncoverAroundZero(x+1, y + 1, size);
 				}
 				else {
 					model.updateCellState(x+1, y+1, "uncovered");
 				}
 			}
 		}
-		if (x != 19) {
+		if (x != size-1) {
 			if (model.returnCellStateBoard()[x+1][y].equals("covered")) {
 				if (model.mineAtCoords(x + 1, y) == 0) {
-					uncoverAroundZero(x+1, y);
+					uncoverAroundZero(x+1, y, size);
 				}
 				else {
 					model.updateCellState(x+1, y, "uncovered");
 				}
 			}
 		}
-		if (x != 19 && y != 0) {
+		if (x != size-1 && y != 0) {
 			if (model.returnCellStateBoard()[x+1][y-1].equals("covered")) {
 				if (model.mineAtCoords(x + 1, y -1) == 0) {
-					uncoverAroundZero(x+1, y-1);
+					uncoverAroundZero(x+1, y-1, size);
 				}
 				else {
 					model.updateCellState(x+1, y-1, "uncovered");
@@ -199,7 +199,7 @@ public class MinesweeperController {
 		if (y != 0) {
 			if (model.returnCellStateBoard()[x][y-1].equals("covered")) {
 				if (model.mineAtCoords(x, y -1) == 0) {
-					uncoverAroundZero(x, y-1);
+					uncoverAroundZero(x, y-1, size);
 				}
 				else {
 					model.updateCellState(x, y-1, "uncovered");
@@ -209,7 +209,7 @@ public class MinesweeperController {
 		if (y != 0 && x !=0) {
 			if (model.returnCellStateBoard()[x-1][y-1].equals("covered")) {
 				if (model.mineAtCoords(x-1, y -1) == 0) {
-					uncoverAroundZero(x-1, y-1);
+					uncoverAroundZero(x-1, y-1, size);
 				}
 				else {
 					model.updateCellState(x-1, y-1, "uncovered");
