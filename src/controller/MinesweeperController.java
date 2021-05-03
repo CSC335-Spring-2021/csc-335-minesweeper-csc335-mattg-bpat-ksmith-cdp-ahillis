@@ -120,7 +120,7 @@ public class MinesweeperController {
 	public boolean isWon() {
 		for (int i = 0; i < mines.length; i++) {
 			for (int j = 0; j < mines[i].length; j++) {
-				if (cellStates[i][j].equals("covered")) {
+				if (mines[i][j] != -1 && ! cellStates[i][j].equals("uncovered")) {
 					return false;
 				}
 			}

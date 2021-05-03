@@ -124,6 +124,9 @@ public class MinesweeperView extends Application implements Observer {
 				if (model.isMineLocation(y,x)) {
 					lose();
 				}
+				if (controller.isWon()) {
+					win();
+				}
 			} // Will need to use controller, using model for demonstration purposes
 		});
 		
