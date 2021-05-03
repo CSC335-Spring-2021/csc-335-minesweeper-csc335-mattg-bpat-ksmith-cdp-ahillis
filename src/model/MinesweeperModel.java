@@ -16,9 +16,11 @@ public class MinesweeperModel extends Observable {
 	private int totalCols;
 	private int totalBombs;
 	private MinesweeperBoard boardObject;
+	private int seconds;
 	
 	
 	public MinesweeperModel(int rowAmount, int colAmount, int bombAmount) {
+		seconds = 0;
 		mines = new int[rowAmount][colAmount];
 		cellStates = new String[rowAmount][colAmount];
 		mineLocations = new HashSet<int[]>();
@@ -50,7 +52,8 @@ public class MinesweeperModel extends Observable {
 		boardObject = new MinesweeperBoard(mines, cellStates);
 	}
 	
-	public MinesweeperModel(File mineFile, File cellStatusFile) {
+	public MinesweeperModel(File mineFile, File cellStatusFile, int secs) {
+		seconds = secs;
 		boardObject = new MinesweeperBoard(mineFile, cellStatusFile);
 		mineLocations = new HashSet<int[]>();
 		mines = boardObject.getMineBoard();
@@ -93,6 +96,9 @@ public class MinesweeperModel extends Observable {
 //			coord[1] = randomCol;
 //			mineLocations.add(coord);
 //		}
+	}
+	public void setTime(int secs) {
+		seconds = secs;
 	}
 	
 	public void sendUpdate() {
@@ -141,6 +147,7 @@ public class MinesweeperModel extends Observable {
 		return mines[row][col];
 	}
 	
+	
 	public int totalRows() {
 		return totalRows;
 	}
@@ -151,6 +158,10 @@ public class MinesweeperModel extends Observable {
 	
 	public int totalBombs() {
 		return totalBombs;
+	}
+	
+	public int getTime() {
+		return seconds;
 	}
 	
 	public void printBoards() {
