@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Random;
@@ -14,6 +15,7 @@ public class MinesweeperModel extends Observable {
 	private int totalRows;
 	private int totalCols;
 	private int totalBombs;
+	private MinesweeperBoard boardObject;
 	
 	
 	public MinesweeperModel(int rowAmount, int colAmount, int bombAmount) {
@@ -45,6 +47,52 @@ public class MinesweeperModel extends Observable {
 			coord[1] = randomCol;
 			mineLocations.add(coord);
 		}
+		boardObject = new MinesweeperBoard(mines, cellStates);
+	}
+	
+	public MinesweeperModel(File mineFile, File cellStatusFile) {
+		boardObject = new MinesweeperBoard(mineFile, cellStatusFile);
+		mineLocations = new HashSet<int[]>();
+		mines = boardObject.getMineBoard();
+		cellStates = boardObject.getStatusBoard();
+		totalRows = mines.length;
+		totalCols = mines[0].length;
+		System.out.println(String.valueOf(totalRows));
+		System.out.println(String.valueOf(totalCols));
+		printBoards();
+		totalBombs = 0;
+		for(int i = 0; i < mines.length; i++) {
+			for(int j = 0; j < mines.length; j++) {
+				if (mines[i][j] == -1) {
+					totalBombs ++;
+					int[] coord = new int[2];
+					coord[0] = i;
+					coord[1] = j;
+				}
+			}
+		}
+		
+//		for(int r = 0; r < totalRows; r++) {
+//			for(int c = 0; c < totalCols; c++) {
+//				mines[r][c] = 0;
+//				cellStates[r][c] = "covered";
+//			}
+//		}
+		
+//		Random rand = new Random();
+//		int randomRow = rand.nextInt(rowAmount);
+//		int randomCol = rand.nextInt(colAmount);
+//		for(int i = 0; i < bombAmount; i++) {
+//			while(isMineLocation(randomRow, randomCol) == true) {
+//				randomRow = rand.nextInt(rowAmount);
+//				randomCol = rand.nextInt(colAmount);
+//			}
+//			mines[randomRow][randomCol] = -1;
+//			int[] coord = new int[2];
+//			coord[0] = randomRow;
+//			coord[1] = randomCol;
+//			mineLocations.add(coord);
+//		}
 	}
 	
 	public void sendUpdate() {
@@ -159,5 +207,9 @@ public class MinesweeperModel extends Observable {
 			}
 			System.out.println();
 		}
+	}
+	
+	public void saveBoard() {
+		boardObject.saveboard();
 	}
 }

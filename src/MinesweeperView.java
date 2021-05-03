@@ -46,7 +46,8 @@ public class MinesweeperView extends Application implements Observer {
 	private MinesweeperModel model;
 	private MinesweeperController controller;
 	private GridPane board = new GridPane();
-	private File savedGame;
+	private File savedMineGame;
+	private File savedCellGame;
 	private boolean fileExists;
 	private ArrayList<ArrayList<StackPane>> grid = new ArrayList<ArrayList<StackPane>>();
 	int count = 0;
@@ -67,11 +68,22 @@ public class MinesweeperView extends Application implements Observer {
 		vbox.setAlignment(Pos.BASELINE_CENTER);
 		vbox.getChildren().add(welcome);
 		vbox.getChildren().add(newGame);
-		vbox.getChildren().add(loadGame);
+		savedMineGame = new File("save_mine_game.dat");
+		savedCellGame = new File("save_cell_game.dat");
+		fileExists = savedMineGame.exists();
+		if (fileExists) {
+			vbox.getChildren().add(loadGame);
+			
+		}
 		startPane.setCenter(vbox);
 		
 		newGame.setOnMouseClicked((event) -> {
 			selectSize(stage);
+		});
+		
+		loadGame.setOnMouseClicked((event) -> {
+			count = 1;
+			createGame(stage, false);
 		});
 		Scene scene = new Scene (startPane, 200, 150);
 		stage.setScene(scene);
@@ -136,17 +148,17 @@ public class MinesweeperView extends Application implements Observer {
 		
 		easy.setOnMouseClicked((event) -> {
 			mineCount = (size * size) / 15;
-			createGame(stage);
+			createGame(stage, true);
 			
 		});
 		medium.setOnMouseClicked((event) -> {
 			mineCount = (size * size) / 10;
-			createGame(stage);
+			createGame(stage, true);
 			
 		});
 		hard.setOnMouseClicked((event) -> {
 			mineCount = (size * size) / 5;
-			createGame(stage);
+			createGame(stage, true);
 			
 		});
 		Scene scene = new Scene (diffPane, 200, 180);
@@ -154,8 +166,14 @@ public class MinesweeperView extends Application implements Observer {
 		stage.show();
 	}
 	
-	private void createGame(Stage stage) {
-		model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
+	private void createGame(Stage stage, boolean newGameBool) {
+		if (!newGameBool) {
+			model = new MinesweeperModel(savedMineGame, savedCellGame);
+			size = model.totalCols();
+		}
+		else {
+			model = new MinesweeperModel(size, size, mineCount); 
+		}
 		model.addObserver(this);
 		controller = new MinesweeperController(model); // add model to () when its more done
 		stage.setTitle("Minesweeper");
@@ -192,6 +210,14 @@ public class MinesweeperView extends Application implements Observer {
 		Scene scene = new Scene (window, size * 27 + 16, size * 27 + 44);
 		stage.setScene(scene);
 		stage.show();
+		stage.setOnCloseRequest(e -> {
+			if (controller.isGameOver()) {
+				savedMineGame.delete();  
+				savedCellGame.delete();
+			}
+			else {
+				model.saveBoard();
+			} });
 		
 		board.setOnMouseClicked((event) -> {
 			int x = getIndexFromPosition(event.getX());
