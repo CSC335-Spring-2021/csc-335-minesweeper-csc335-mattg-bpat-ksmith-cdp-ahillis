@@ -148,7 +148,7 @@ public class MinesweeperView extends Application implements Observer {
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(20));
 		vbox.setSpacing(10);
-		vbox.setAlignment(Pos.BASELINE_CENTER);
+		vbox.setAlignment(Pos.BASELINE_CENTER); 
 		vbox.getChildren().add(welcome);
 		vbox.getChildren().add(small);
 		vbox.getChildren().add(medium);
