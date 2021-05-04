@@ -65,6 +65,8 @@ public class MinesweeperView extends Application implements Observer {
 	private File savedGameInfo;
 	private boolean fileExists;
 	private ArrayList<ArrayList<StackPane>> grid = new ArrayList<ArrayList<StackPane>>();
+	private int[] levels = {15, 20, 15, 20, 25, 20, 25};
+	private int levelsIterator = 0;
 	int count = 0;
 	int size = 0;
 	int mineCount = 0;
@@ -88,6 +90,8 @@ public class MinesweeperView extends Application implements Observer {
 		newGame.setText("New Game");
 		Button loadGame = new Button();
 		loadGame.setText("Load Game");
+		Button survival = new Button();
+		survival.setText("Survival (Wow Factor)");
 		Label welcome = new Label("Welcome to Minesweeper");
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(20));
@@ -95,6 +99,7 @@ public class MinesweeperView extends Application implements Observer {
 		vbox.setAlignment(Pos.BASELINE_CENTER);
 		vbox.getChildren().add(welcome);
 		vbox.getChildren().add(newGame);
+		
 		//savedMineGame = new File("save_mine_game.dat");
 		savedGameInfo = new File("save_game.dat");
 		fileExists = savedGameInfo.exists();
@@ -102,6 +107,7 @@ public class MinesweeperView extends Application implements Observer {
 			vbox.getChildren().add(loadGame);
 			
 		}
+		vbox.getChildren().add(survival);
 		startPane.setCenter(vbox);
 		
 		newGame.setOnMouseClicked((event) -> {
@@ -112,11 +118,24 @@ public class MinesweeperView extends Application implements Observer {
 			count = 1;
 			createGame(stage, false);
 		});
-		Scene scene = new Scene (startPane, 200, 150);
+		survival.setOnMouseClicked((event) -> {
+			createSurvival(stage);
+		});
+		Scene scene;
+		if (fileExists) {
+			scene = new Scene (startPane, 200, 150);
+		} else {
+			scene = new Scene (startPane, 200, 175);
+		}
 		stage.setScene(scene);
 		stage.show();
 	}
 	
+	private void createSurvival(Stage stage) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void selectSize(Stage stage) {
 		BorderPane sizePane = new BorderPane();
 		Button small = new Button();
