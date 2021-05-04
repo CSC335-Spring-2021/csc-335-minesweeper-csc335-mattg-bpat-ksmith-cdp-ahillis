@@ -49,7 +49,7 @@ public class MinesweeperModel extends Observable {
 			coord[1] = randomCol;
 			mineLocations.add(coord);
 		}
-		boardObject = new MinesweeperBoard(mines, cellStates);
+		boardObject = new MinesweeperBoard(mines, cellStates, seconds);
 	}
 	
 	public MinesweeperModel(File gameInfo) {
