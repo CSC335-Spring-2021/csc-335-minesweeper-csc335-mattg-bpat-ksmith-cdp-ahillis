@@ -73,6 +73,7 @@ public class MinesweeperView extends Application implements Observer {
 	int totalSeconds = 0;
 	Timeline timeline;
 	Stage stage;
+	boolean stopped = false;
 
 	
 	/**
@@ -268,6 +269,10 @@ public class MinesweeperView extends Application implements Observer {
 		BorderPane window = new BorderPane();
 		
 		item.setOnAction(e -> { 
+			if(stopped) {
+				timeline.playFromStart();
+				stopped = false;
+			}
 			grid = new ArrayList<ArrayList<StackPane>>();
 			board.getChildren().clear();
 //			createGame(stage, true);
@@ -280,6 +285,7 @@ public class MinesweeperView extends Application implements Observer {
 				savedGameInfo.delete();
 				savedGameInfo = new File("save_game.dat");
 			};
+			
 			
 			board.getChildren().clear();
 			for (int i = 0; i < size; i++) {
@@ -308,6 +314,30 @@ public class MinesweeperView extends Application implements Observer {
 			model.sendUpdate();
 		});
 		
+		otherItem.setOnAction(ev -> { 
+			timeline.stop();
+			stopped = true;
+			board = new GridPane();
+			time = new Label();
+			grid = new ArrayList<ArrayList<StackPane>>();
+			count = 0;
+			size = 0;
+			mineCount = 0;
+			minutes = 0;
+			seconds = 0;
+			totalSeconds = 0;
+			System.out.println("PB");
+			try {
+				model.saveBoard();
+				start(stage);
+				System.out.println("PR");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				System.out.println("BR");
+				e1.printStackTrace();
+			}
+		});
+		
 		window.setTop(menubar);
 		window.setCenter(board);
 		time.setText(String.valueOf(seconds));
@@ -326,8 +356,10 @@ public class MinesweeperView extends Application implements Observer {
 				model.setTime(totalSeconds);
 				model.saveBoard();
 			} });
-		
+//		EventHandler<MouseEvent> clickHan = new clickHandler();
+//		board.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHan);
 		board.setOnMouseClicked((event) -> {
+			if (!controller.isGameOver()) {
 			int x = getIndexFromPosition(event.getX());
 			int y = getIndexFromPosition(event.getY());
 			System.out.println("(x, y): " + x + ", " + y);
@@ -363,13 +395,17 @@ public class MinesweeperView extends Application implements Observer {
 			else {
 				model.updateCellState(y, x, "uncovered");
 				controller.clicked(x, y, size);
+				if (controller.isGameOver()) {
+					//board.removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
+				}
 				if (model.isMineLocation(y,x)) {
 					lose();
 				}
 				if (controller.isWon()) {
 					win();
 				}
-			} // Will need to use controller, using model for demonstration purposes
+			}
+			}// Will need to use controller, using model for demonstration purposes
 		});
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
@@ -399,8 +435,65 @@ public class MinesweeperView extends Application implements Observer {
 					}));
                       
 		timeline.playFromStart();
+		stopped = false;
 		model.sendUpdate(); //
 	}
+	
+//	private class clickHandler implements EventHandler<MouseEvent> {
+//
+//		@Override
+//		public void handle(MouseEvent event) {
+//			System.out.println("checked");
+//			int x = getIndexFromPosition(event.getX());
+//			int y = getIndexFromPosition(event.getY());
+//			System.out.println("(x, y): " + x + ", " + y);
+//			if (count == 0) {
+//				//seconds = 50;
+//				model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
+//				controller = new MinesweeperController(model);// add model to () when its more done
+//				//while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), y, x)) {
+//				while (model.isMineLocation(y, x)) {
+//					model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
+//					controller = new MinesweeperController(model);// add model to () when its more done
+//				}
+//				controller.updateMineBoard();
+//				count++;
+//				
+//				System.out.println("UP");
+//			}
+//			
+//			
+//			// TODO: Complete turn, including mine checking
+//			
+//			if (event.getButton() == MouseButton.SECONDARY) {
+//				if (! model.cellStateAtCoords(y, x).equals("uncovered")) {
+//					if (model.cellStateAtCoords(y, x).equals("flagged")) {
+//						model.updateCellState(y, x, "covered");
+//					}
+//					else {
+//					model.updateCellState(y, x, "flagged");
+//					}
+//				}
+//			}
+//			else {
+//				model.updateCellState(y, x, "uncovered");
+//				controller.clicked(x, y, size);
+//				if (controller.isGameOver()) {
+//					System.out.println("UHOH");
+//					board.removeEventHandler(MouseEvent.MOUSE_CLICKED, this);
+//				}
+//				if (model.isMineLocation(y,x)) {
+//					lose();
+//				}
+//				if (controller.isWon()) {
+//					win();
+//				}
+//			}
+//			//model.sendUpdate();
+//			
+//		}
+//	
+//	}
 	
 //	private class AnimationHandler implements EventHandler<ActionEvent> { // This handle method gets called every 100 ms
 //	@Override public void handle(ActionEvent event) {
@@ -476,6 +569,11 @@ public class MinesweeperView extends Application implements Observer {
 	 * This private method displays an alert in the case that the player wins at the end of the game.
 	 */
 	private void win() {
+		if (savedGameInfo.exists()) {
+			savedGameInfo.delete();
+		};
+		timeline.stop();
+		stopped = true;
 		Alert b = new Alert(Alert.AlertType.INFORMATION);
 		b.setTitle("Message");
 		b.setContentText("You uncovered all the correct mines. You Won!");
@@ -487,6 +585,11 @@ public class MinesweeperView extends Application implements Observer {
 	 * This private method displays an alert in the case that the player loses at the end of the game.
 	 */
 	private void lose() {
+		timeline.stop();
+		if (savedGameInfo.exists()) {
+			savedGameInfo.delete();
+		};
+		stopped = true;
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle("Message");
 		a.setContentText("You uncovered a mine. You lose!");
