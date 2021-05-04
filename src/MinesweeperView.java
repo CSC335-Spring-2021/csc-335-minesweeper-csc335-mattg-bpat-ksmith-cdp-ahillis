@@ -328,7 +328,9 @@ public class MinesweeperView extends Application implements Observer {
 			totalSeconds = 0;
 			System.out.println("PB");
 			try {
-				model.saveBoard();
+				if (!controller.isGameOver()) {
+					model.saveBoard();
+				}
 				start(stage);
 				System.out.println("PR");
 			} catch (Exception e1) {
