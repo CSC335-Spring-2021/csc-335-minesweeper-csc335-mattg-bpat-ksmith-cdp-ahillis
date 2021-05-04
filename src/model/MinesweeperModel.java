@@ -8,6 +8,7 @@ import java.util.Set;
 /**
  * This class defines the Model for the Minesweeper package.
  *
+ * @author 
  */
 
 @SuppressWarnings("deprecation")
