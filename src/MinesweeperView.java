@@ -47,6 +47,12 @@ import model.MinesweeperBoard;
 import model.MinesweeperModel;
 import controller.MinesweeperController;
 
+/**
+ * This class defines the View for the Minesweeper package.
+ *
+ * @author 
+ */
+
 @SuppressWarnings("deprecation")
 public class MinesweeperView extends Application implements Observer {
 	
@@ -66,8 +72,13 @@ public class MinesweeperView extends Application implements Observer {
 	int seconds = 0;
 	int totalSeconds = 0;
 	Timeline timeline;
-	
 	Stage stage;
+
+	
+	/**
+	 * This method controls the GUI View (in MVC) for the Minesweeper program.
+	 * 
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
 		this.stage = stage;
@@ -353,6 +364,13 @@ public class MinesweeperView extends Application implements Observer {
 //		}  
 //	}
 	
+	/**
+	 * This private method takes a position on screen, and converts it to its associated index in the mine board. This method handles both X and Y coordinates since the board is square.
+	 * 
+	 * @param position the location in the window of a mouse click
+	 * 
+	 * @return the associated index
+	 */
 	private int getIndexFromPosition(double position) {
 		// minus 8 for inset
 		int aligned = (int) position - 8;
@@ -361,6 +379,11 @@ public class MinesweeperView extends Application implements Observer {
 		return aligned / 27;
 	}
 	
+	/**
+	 * This public method implements the update method of the Observer interface. This method is called by the model after this object has been added as an observer.
+	 * 
+	 * This method redraws the board based on changes made to the underlying model.
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		MinesweeperModel model = (MinesweeperModel) o;
@@ -400,7 +423,7 @@ public class MinesweeperView extends Application implements Observer {
 	}
 	
 	/**
-	 * Displays an alert in the case that the player wins at the end of the game.
+	 * This private method displays an alert in the case that the player wins at the end of the game.
 	 */
 	private void win() {
 		Alert b = new Alert(Alert.AlertType.INFORMATION);
@@ -411,7 +434,7 @@ public class MinesweeperView extends Application implements Observer {
 	}
 	
 	/**
-	 * Displays an alert in the case that the player loses at the end of the game.
+	 * This private method displays an alert in the case that the player loses at the end of the game.
 	 */
 	private void lose() {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
