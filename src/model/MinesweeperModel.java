@@ -16,7 +16,7 @@ public class MinesweeperModel extends Observable {
 	private int totalCols;
 	private int totalBombs;
 	private MinesweeperBoard boardObject;
-	private int seconds;
+	private int seconds; // Make sure its in the Integer Wrapper Class for Serialization
 	
 	
 	public MinesweeperModel(int rowAmount, int colAmount, int bombAmount) {
@@ -52,12 +52,12 @@ public class MinesweeperModel extends Observable {
 		boardObject = new MinesweeperBoard(mines, cellStates);
 	}
 	
-	public MinesweeperModel(File mineFile, File cellStatusFile, int secs) {
-		seconds = secs;
-		boardObject = new MinesweeperBoard(mineFile, cellStatusFile);
+	public MinesweeperModel(File gameInfo) {
+		boardObject = new MinesweeperBoard(gameInfo);
 		mineLocations = new HashSet<int[]>();
 		mines = boardObject.getMineBoard();
 		cellStates = boardObject.getStatusBoard();
+		seconds = boardObject.getTime();
 		totalRows = mines.length;
 		totalCols = mines[0].length;
 		System.out.println(String.valueOf(totalRows));
@@ -221,6 +221,7 @@ public class MinesweeperModel extends Observable {
 	}
 	
 	public void saveBoard() {
+		boardObject.setTime(seconds);
 		boardObject.saveboard();
 	}
 }

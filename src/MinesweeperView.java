@@ -54,8 +54,9 @@ public class MinesweeperView extends Application implements Observer {
 	private MinesweeperController controller;
 	private GridPane board = new GridPane();
 	private Label time = new Label();
-	private File savedMineGame;
-	private File savedCellGame;
+	//private File savedMineGame;
+	//private File savedCellGame;
+	private File savedGameInfo;
 	private boolean fileExists;
 	private ArrayList<ArrayList<StackPane>> grid = new ArrayList<ArrayList<StackPane>>();
 	int count = 0;
@@ -63,6 +64,7 @@ public class MinesweeperView extends Application implements Observer {
 	int mineCount = 0;
 	int minutes = 0;
 	int seconds = 0;
+	int totalSeconds = 0;
 	Timeline timeline;
 	
 	Stage stage;
@@ -81,9 +83,9 @@ public class MinesweeperView extends Application implements Observer {
 		vbox.setAlignment(Pos.BASELINE_CENTER);
 		vbox.getChildren().add(welcome);
 		vbox.getChildren().add(newGame);
-		savedMineGame = new File("save_mine_game.dat");
-		savedCellGame = new File("save_cell_game.dat");
-		fileExists = savedMineGame.exists();
+		//savedMineGame = new File("save_mine_game.dat");
+		savedGameInfo = new File("save_game.dat");
+		fileExists = savedGameInfo.exists();
 		if (fileExists) {
 			vbox.getChildren().add(loadGame);
 			
@@ -181,8 +183,37 @@ public class MinesweeperView extends Application implements Observer {
 	
 	private void createGame(Stage stage, boolean newGameBool) {
 		if (!newGameBool) {
-			model = new MinesweeperModel(savedMineGame, savedCellGame, seconds);
+			model = new MinesweeperModel(savedGameInfo);
 			size = model.totalCols();
+			totalSeconds = model.getTime();
+			while (totalSeconds > 59) {
+				minutes++;
+				seconds = seconds - 60;
+			}
+			timeline = new Timeline();
+			timeline.setCycleCount(Timeline.INDEFINITE);
+			timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
+	                    // KeyFrame event handler
+						@Override
+	                    public void handle(ActionEvent actionEvent) {
+	                        seconds++;
+	                        totalSeconds++;
+	                        if (seconds == 60) {
+	                        	minutes++;
+	                        	seconds = 0;
+	                        	totalSeconds = 0;
+	                        }
+	                        DecimalFormat formatter = new DecimalFormat("00");
+	                        String secFormatted = formatter.format(seconds);
+	                        String minFormatted = formatter.format(minutes);
+	                        time.setText("Timer " + minFormatted + ":" + secFormatted);
+	                        model.setTime(totalSeconds);
+	                        model.sendUpdate();
+	                        }
+
+						}));
+	                      
+			timeline.playFromStart();
 		}
 		else {
 			model = new MinesweeperModel(size, size, mineCount); 
@@ -227,8 +258,8 @@ public class MinesweeperView extends Application implements Observer {
 		stage.show();
 		stage.setOnCloseRequest(e -> {
 			if (controller.isGameOver()) {
-				savedMineGame.delete();  
-				savedCellGame.delete();
+				savedGameInfo.delete();  
+				//savedCellGame.delete();
 			}
 			else {
 				model.saveBoard();
@@ -239,6 +270,7 @@ public class MinesweeperView extends Application implements Observer {
 			int y = getIndexFromPosition(event.getY());
 			System.out.println("(x, y): " + x + ", " + y);
 			if (count == 0) {
+				//seconds = 50;
 				model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
 				controller = new MinesweeperController(model);// add model to () when its more done
 				//while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), y, x)) {
@@ -257,15 +289,21 @@ public class MinesweeperView extends Application implements Observer {
 							@Override
 		                    public void handle(ActionEvent actionEvent) {
 		                        seconds++;
-		                        if (seconds == 60) {
-		                        	minutes ++;
-		                        	seconds = 0;
-		                        }
+		                        totalSeconds++;
+		                        System.out.println(seconds);
 		                        DecimalFormat formatter = new DecimalFormat("00");
 		                        String secFormatted = formatter.format(seconds);
 		                        String minFormatted = formatter.format(minutes);
+		                        if (seconds == 60) {
+		                        	System.out.println("MINUTE: " + minutes);
+		                        	minutes++;
+		                        	seconds = 0;
+		                        	totalSeconds = 0;
+		                        	System.out.println("SECONDS NOW: " +seconds);
+		                        	secFormatted = formatter.format(seconds);
+		                        }
 		                        time.setText("Timer " + minFormatted + ":" + secFormatted);
-		                        model.setTime(seconds);
+		                        model.setTime(totalSeconds);
 		                        model.sendUpdate();
 		                        }
 
@@ -354,7 +392,7 @@ public class MinesweeperView extends Application implements Observer {
 				}
 			}
 		}
-		seconds = model.getTime();
+		totalSeconds = model.getTime();
 		DecimalFormat formatter = new DecimalFormat("00");
         String secFormatted = formatter.format(seconds);
         String minFormatted = formatter.format(minutes);

@@ -7,36 +7,32 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class MinesweeperBoard implements Serializable {
 	private int[][] mineBoard;
 	private String[][] cellStatusBoard;
+	private Integer time;
 	
-	public MinesweeperBoard(File savedMineBoard, File savedCellStatusBoard) {
-		FileInputStream mineFile;
+	public MinesweeperBoard(File file) {
+		FileInputStream gameInfoFile;
 		try {
-			mineFile = new FileInputStream(savedMineBoard);
-			ObjectInputStream in = new ObjectInputStream(mineFile);
-			mineBoard = (int[][]) in.readObject();
+			gameInfoFile = new FileInputStream(file);
+			ObjectInputStream in = new ObjectInputStream(gameInfoFile);
+			
+			ArrayList<Object> gameInfo = (ArrayList<Object>) in.readObject();
+			System.out.println(gameInfo);
+			mineBoard = (int[][]) gameInfo.get(0);
+			cellStatusBoard = (String[][]) gameInfo.get(1);
+			time = (Integer) gameInfo.get(2);
+			in.close();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		FileInputStream cellStatusFile;
-		try {
-			cellStatusFile = new FileInputStream(savedCellStatusBoard);
-			ObjectInputStream in = new ObjectInputStream(cellStatusFile);
-			cellStatusBoard = (String[][]) in.readObject();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
 	}
 	
 	
@@ -48,41 +44,25 @@ public class MinesweeperBoard implements Serializable {
 	 * is able to be encoded into the dat file and saved inside our project.
 	 */
 	public void saveboard() {
-		String mineFilename = "save_mine_game.dat";
-		String statusFilename = "save_cell_game.dat";
+		String Filename = "save_game.dat";
         
         // Serialization 
         try
         {   
             //Saving of object in a file
-            FileOutputStream mineFile = new FileOutputStream(mineFilename);
+            FileOutputStream mineFile = new FileOutputStream(Filename);
             ObjectOutputStream mineOut = new ObjectOutputStream(mineFile);
               
             // Method for serialization of object
-            mineOut.writeObject(mineBoard);
+            ArrayList<Object> gameInfo = new ArrayList<Object>();
+            gameInfo.add(mineBoard);
+            gameInfo.add(cellStatusBoard);
+            gameInfo.add(time);
+            
+            mineOut.writeObject(gameInfo);
               
             mineOut.close();
             mineFile.close();
-  
-        }
-          
-        catch(IOException ex)
-        {
-            System.out.println("Mine IOException occured");
-        }
-        
-        // Serialization 
-        try
-        {   
-            //Saving of object in a file
-            FileOutputStream statusFile = new FileOutputStream(statusFilename);
-            ObjectOutputStream statusOut = new ObjectOutputStream(statusFile);
-              
-            // Method for serialization of object
-            statusOut.writeObject(cellStatusBoard);
-              
-            statusOut.close();
-            statusFile.close();
   
         }
           
@@ -104,5 +84,13 @@ public class MinesweeperBoard implements Serializable {
 	
 	public int[][] getMineBoard() {
 		return mineBoard;
+	}
+	
+	public int getTime() {
+		return time.intValue();
+	}
+	
+	public void setTime(int sec) {
+		time = sec;
 	}
 }
