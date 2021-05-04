@@ -72,9 +72,10 @@ public class MinesweeperBoard implements Serializable {
         }
 	}
 	
-	public MinesweeperBoard(int[][] currentMineBoard, String[][] currentStatusBoard) {
+	public MinesweeperBoard(int[][] currentMineBoard, String[][] currentStatusBoard, int seconds) {
 		mineBoard = currentMineBoard;
 		cellStatusBoard = currentStatusBoard;
+		time = Integer.valueOf(seconds);
 		
 	}
 
@@ -91,6 +92,6 @@ public class MinesweeperBoard implements Serializable {
 	}
 	
 	public void setTime(int sec) {
-		time = sec;
+		time = Integer.valueOf(sec);
 	}
 }
