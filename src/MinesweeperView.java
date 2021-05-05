@@ -802,7 +802,14 @@ public class MinesweeperView extends Application implements Observer {
 			 }
 			 else {
 				 for (int i = 0; i < 5; i++) {
-					 scores += (i+1) + ". " + x.get(i) + " \n";
+					 int minutes = x.get(i)/60;
+					 int seconds = x.get(i)%60;
+					 if (seconds < 10) {
+						 scores += (i+1) + ". " + minutes + ":0" + seconds + " \n";
+					 }
+					 else {
+					 scores += (i+1) + ". " + minutes + ":" + seconds + " \n";
+					 }
 				 } 
 			 }
 		}
