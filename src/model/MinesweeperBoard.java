@@ -60,6 +60,13 @@ public class MinesweeperBoard implements Serializable {
 		cellStatusBoard = currentStatusBoard;
 		time = Integer.valueOf(seconds);
 	}
+	
+	/**
+	 * Empty constructor for the MinewsweeperBoard class
+	 */
+	public MinesweeperBoard() {
+		
+	}
 
 	/**
 	 * This public method saves the board object into save_game.dat
