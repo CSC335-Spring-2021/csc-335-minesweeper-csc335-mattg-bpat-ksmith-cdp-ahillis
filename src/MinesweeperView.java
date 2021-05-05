@@ -61,7 +61,6 @@ public class MinesweeperView extends Application implements Observer {
 	private int[] levels = {15, 20, 15, 20, 25, 25};
 	private int[] difficulties = {15, 20, 25};
 	private int levelsIterator = 0;
-	private int difficultiesIterator = 0;
 	private int currLevel = 1;
 	private boolean isSurvival = false;
 	
@@ -150,9 +149,8 @@ public class MinesweeperView extends Application implements Observer {
 	 * @param stage the stage to create the survival game on
 	 */
 	private void createSurvival(Stage stage) {
-		mineCount = difficulties[difficultiesIterator];
+		mineCount = difficulties[levelsIterator];
 		size = levels[levelsIterator];
-		difficultiesIterator++;
 		levelsIterator++;
 		isSurvival = true;
 		createGame(stage, true);
@@ -306,9 +304,8 @@ public class MinesweeperView extends Application implements Observer {
 			button.setOnMouseClicked((event) -> {
 				grid = new ArrayList<ArrayList<StackPane>>();
 				board.getChildren().clear();
-				mineCount = difficulties[difficultiesIterator];
+				mineCount = difficulties[levelsIterator];
 				size = levels[levelsIterator];
-				difficultiesIterator++;
 				levelsIterator++;
 				currLevel++;
 				System.out.println("mineCount: " + mineCount);
@@ -442,15 +439,7 @@ public class MinesweeperView extends Application implements Observer {
 		Scene scene = new Scene (window, size * 27 + 16, size * 27 + 59);
 		stage.setScene(scene);
 		stage.show();
-		stage.setOnCloseRequest(e -> {
-			if (controller.isGameOver()) {
-				savedGameInfo.delete();  
-			}
-			else {
-				model.setTime(totalSeconds);
-				model.saveBoard();
-			} 
-		});
+		
 		board.setOnMouseClicked((event) -> {
 			if (!controller.isGameOver()) {
 			int x = getIndexFromPosition(event.getX());
@@ -500,9 +489,8 @@ public class MinesweeperView extends Application implements Observer {
 							button.setVisible(false);
 							grid = new ArrayList<ArrayList<StackPane>>();
 							board.getChildren().clear();
-							mineCount = difficulties[difficultiesIterator];
+							mineCount = difficulties[levelsIterator];
 							size = levels[levelsIterator];
-							difficultiesIterator++;
 							levelsIterator++;
 							currLevel++;
 							System.out.println("mineCount: " + mineCount);
