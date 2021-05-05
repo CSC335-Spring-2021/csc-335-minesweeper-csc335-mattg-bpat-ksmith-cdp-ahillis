@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * This class defines the Board for the Minesweeper package.
  *
- * @author 
+ * @author kylesmith, brendanp, matthewgleason, austinhillis6, cdpeterson
  */
 
 @SuppressWarnings("serial")

@@ -5,7 +5,7 @@ import model.MinesweeperModel;
 /**
  * This class defines the Model for the Minesweeper package.
  *
- * @author
+ * @author kylesmith, brendanp, matthewgleason, austinhillis6, cdpeterson
  */
 
 public class MinesweeperController {	

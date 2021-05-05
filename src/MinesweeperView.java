@@ -41,7 +41,7 @@ import controller.MinesweeperController;
 /**
  * This class defines the View for the Minesweeper package.
  *
- * @author 
+ * @author kylesmith, brendanp, matthewgleason, austinhillis6, cdpeterson
  */
 
 @SuppressWarnings("deprecation")
