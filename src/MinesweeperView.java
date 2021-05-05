@@ -485,7 +485,7 @@ public class MinesweeperView extends Application implements Observer {
 					}
 				}//
 			}
-			else {
+			else if (model.cellStateAtCoords(y, x).equals("covered")){
 				model.updateCellState(y, x, "uncovered");
 				controller.clicked(x, y, size);
 				if (isSurvival) {
