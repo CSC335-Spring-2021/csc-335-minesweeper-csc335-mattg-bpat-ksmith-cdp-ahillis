@@ -71,7 +71,7 @@ public class MinesweeperView extends Application implements Observer {
 	private int[] difficulties = {15, 20, 25};
 	private int levelsIterator = 0;
 	private int difficultiesIterator = 0;
-	private int currLevel = 0;
+	private int currLevel = 1;
 	private boolean isSurvival = false;
 	
 	int count = 0;
@@ -296,9 +296,11 @@ public class MinesweeperView extends Application implements Observer {
 		if (isSurvival) {
 			pane = new GridPane();
 			Label label = new Label();
-			label.setText("Level " + currLevel++);
+			label.setText("Level " + currLevel);
+			label.setStyle("-fx-font: 24 arial;");
 			Button button = new Button();
 			button.setVisible(false);
+			button.setText("Next Level");
 			button.setOnMouseClicked((event) -> {
 				grid = new ArrayList<ArrayList<StackPane>>();
 				board.getChildren().clear();
@@ -307,6 +309,7 @@ public class MinesweeperView extends Application implements Observer {
 				size = levels[levelsIterator];
 				difficultiesIterator++;
 				levelsIterator++;
+				currLevel++;
 				System.out.println("mineCount: " + mineCount);
 				System.out.println("size: " + size);
 				model = new MinesweeperModel(size, size, mineCount);
@@ -344,7 +347,9 @@ public class MinesweeperView extends Application implements Observer {
 				}
 			}
 			pane.add(label, 0, 0);
-			pane.add(button, 0, 1);
+			pane.add(button, 1, 0);
+			pane.setPadding(new Insets(8, 8, 8, 8));
+			pane.setMaxHeight(10);
 		// --- END SURVIVAL ---
 		} else {
 			Menu menu = new Menu("File");
