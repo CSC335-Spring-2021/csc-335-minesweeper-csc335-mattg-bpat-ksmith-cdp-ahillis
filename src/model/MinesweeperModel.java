@@ -1,6 +1,7 @@
 package model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Random;
@@ -46,7 +47,7 @@ public class MinesweeperModel extends Observable {
 				mines[r][c] = 0;
 				cellStates[r][c] = "covered";
 			}
-		}
+		}//
 		
 		Random rand = new Random();
 		int randomRow = rand.nextInt(rowAmount);
@@ -88,28 +89,12 @@ public class MinesweeperModel extends Observable {
 			}
 		}
 		
-//		for(int r = 0; r < totalRows; r++) {
-//			for(int c = 0; c < totalCols; c++) {
-//				mines[r][c] = 0;
-//				cellStates[r][c] = "covered";
-//			}
-//		}
-		
-//		Random rand = new Random();
-//		int randomRow = rand.nextInt(rowAmount);
-//		int randomCol = rand.nextInt(colAmount);
-//		for(int i = 0; i < bombAmount; i++) {
-//			while(isMineLocation(randomRow, randomCol) == true) {
-//				randomRow = rand.nextInt(rowAmount);
-//				randomCol = rand.nextInt(colAmount);
-//			}
-//			mines[randomRow][randomCol] = -1;
-//			int[] coord = new int[2];
-//			coord[0] = randomRow;
-//			coord[1] = randomCol;
-//			mineLocations.add(coord);
-//		}
 	}
+	
+	public MinesweeperModel() {
+		boardObject = new MinesweeperBoard();
+	}
+	
 	public void setTime(int secs) {
 		seconds = secs;
 	}
@@ -306,5 +291,14 @@ public class MinesweeperModel extends Observable {
 	public void saveBoard() {
 		boardObject.setTime(seconds);
 		boardObject.saveboard();
+	}
+	
+
+	public ArrayList<Integer> getHighScores(File highScoreFile) {
+		return boardObject.getHighScores(highScoreFile);
+	}
+	
+	public void saveHighScores(int time) {
+		boardObject.saveHighScores(time);
 	}
 }

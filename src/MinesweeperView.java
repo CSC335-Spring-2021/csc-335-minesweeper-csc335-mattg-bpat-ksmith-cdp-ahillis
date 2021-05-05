@@ -1,6 +1,7 @@
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
@@ -62,9 +63,20 @@ public class MinesweeperView extends Application implements Observer {
 	private Label time = new Label();
 	//private File savedMineGame;
 	//private File savedCellGame;
+	private File highScoreFile;
+	private boolean highScoresExists;
 	private File savedGameInfo;
 	private boolean fileExists;
 	private ArrayList<ArrayList<StackPane>> grid = new ArrayList<ArrayList<StackPane>>();
+	
+	// Survival fields
+	private int[] levels = {15, 20, 15, 20, 25, 25};
+	private int[] difficulties = {15, 20, 25};
+	private int levelsIterator = 0;
+	private int difficultiesIterator = 0;
+	private int currLevel = 1;
+	private boolean isSurvival = false;
+	
 	int count = 0;
 	int size = 0;
 	int mineCount = 0;
@@ -73,6 +85,7 @@ public class MinesweeperView extends Application implements Observer {
 	int totalSeconds = 0;
 	Timeline timeline;
 	Stage stage;
+	boolean stopped = false;
 
 	
 	/**
@@ -87,6 +100,10 @@ public class MinesweeperView extends Application implements Observer {
 		newGame.setText("New Game");
 		Button loadGame = new Button();
 		loadGame.setText("Load Game");
+		Button highScores = new Button();
+		highScores.setText("High Scores");
+		Button survival = new Button();
+		survival.setText("Survival (Wow Factor)");
 		Label welcome = new Label("Welcome to Minesweeper");
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(20));
@@ -94,13 +111,20 @@ public class MinesweeperView extends Application implements Observer {
 		vbox.setAlignment(Pos.BASELINE_CENTER);
 		vbox.getChildren().add(welcome);
 		vbox.getChildren().add(newGame);
-		//savedMineGame = new File("save_mine_game.dat");
+		
 		savedGameInfo = new File("save_game.dat");
 		fileExists = savedGameInfo.exists();
+		highScoreFile = new File("highScores.dat");
+		highScoresExists = highScoreFile.exists();
 		if (fileExists) {
 			vbox.getChildren().add(loadGame);
 			
 		}
+		if (highScoresExists) {
+			vbox.getChildren().add(highScores);
+			
+		}
+		vbox.getChildren().add(survival);
 		startPane.setCenter(vbox);
 		
 		newGame.setOnMouseClicked((event) -> {
@@ -111,11 +135,34 @@ public class MinesweeperView extends Application implements Observer {
 			count = 1;
 			createGame(stage, false);
 		});
-		Scene scene = new Scene (startPane, 200, 150);
+		
+		highScores.setOnMouseClicked((event) -> {
+			showScoreBoard();
+		});
+
+		survival.setOnMouseClicked((event) -> {
+			createSurvival(stage);
+		});
+		Scene scene;
+		if (fileExists) {
+			scene = new Scene (startPane, 200, 200);
+		} else {
+			scene = new Scene (startPane, 200, 175);
+		}
 		stage.setScene(scene);
 		stage.show();
 	}
 	
+	private void createSurvival(Stage stage) {
+		// TODO Auto-generated method stub
+		mineCount = difficulties[difficultiesIterator];
+		size = levels[levelsIterator];
+		difficultiesIterator++;
+		levelsIterator++;
+		isSurvival = true;
+		createGame(stage, true);
+	}
+
 	private void selectSize(Stage stage) {
 		BorderPane sizePane = new BorderPane();
 		Button small = new Button();
@@ -128,7 +175,7 @@ public class MinesweeperView extends Application implements Observer {
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(20));
 		vbox.setSpacing(10);
-		vbox.setAlignment(Pos.BASELINE_CENTER);
+		vbox.setAlignment(Pos.BASELINE_CENTER); 
 		vbox.getChildren().add(welcome);
 		vbox.getChildren().add(small);
 		vbox.getChildren().add(medium);
@@ -205,31 +252,6 @@ public class MinesweeperView extends Application implements Observer {
 				seconds = seconds - 60;
 			}
 			System.out.println("here");
-//			timeline = new Timeline();
-//			timeline.setCycleCount(Timeline.INDEFINITE);
-//			timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
-//	                    // KeyFrame event handler
-//						@Override
-//	                    public void handle(ActionEvent actionEvent) {
-//							System.out.println("AA");
-//	                        seconds++;
-//	                        totalSeconds++;
-//	                        if (seconds == 60) {
-//	                        	minutes++;
-//	                        	seconds = 0;
-//	                        }
-//	                        DecimalFormat formatter = new DecimalFormat("00");
-//	                        String secFormatted = formatter.format(seconds);
-//	                        String minFormatted = formatter.format(minutes);
-//	                        time.setText("Timer " + minFormatted + ":" + secFormatted);
-//	                        model.setTime(totalSeconds);
-//	                        model.sendUpdate();
-//	                        }
-//
-//						}));
-//	         System.out.println("there");          
-//			timeline.playFromStart();
-//		}
 		}
 		else {
 			model = new MinesweeperModel(size, size, mineCount); 
@@ -250,27 +272,90 @@ public class MinesweeperView extends Application implements Observer {
 				square.setFill(Color.LIGHTBLUE);
 				square.setWidth(25);
 				square.setHeight(25);
-				//stack.setPadding(new Insets(2,2,2,2));
 				stack.getChildren().addAll(square);
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 				board.add(stack,i,j);
 				grid.get(i).add(stack);
 			}
 		}
-		
-		Menu menu = new Menu("File");
-		MenuBar menubar = new MenuBar();
-		MenuItem item = new MenuItem("New game");
-		MenuItem otherItem = new MenuItem("Menu");
-		menu.getItems().add(item);
-		menu.getItems().add(otherItem);
-		menubar.getMenus().add(menu);
 		BorderPane window = new BorderPane();
+		MenuBar menubar = null;
+		GridPane pane = null;
+		// --- SURVIVAL ---
+		if (isSurvival) {
+			pane = new GridPane();
+			Label label = new Label();
+			label.setText("Level " + currLevel);
+			label.setStyle("-fx-font: 24 arial;");
+			Button button = new Button();
+			button.setVisible(false);
+			button.setText("Next Level");
+			button.setOnMouseClicked((event) -> {
+				grid = new ArrayList<ArrayList<StackPane>>();
+				board.getChildren().clear();
+				mineCount = difficulties[difficultiesIterator];
+				size = levels[levelsIterator];
+				difficultiesIterator++;
+				levelsIterator++;
+				currLevel++;
+				System.out.println("mineCount: " + mineCount);
+				System.out.println("size: " + size);
+				model = new MinesweeperModel(size, size, mineCount);
+				controller = new MinesweeperController(model);
+				
+				board.getChildren().clear();
+				for (int i = 0; i < size; i++) {
+					grid.add(new ArrayList<StackPane>());
+					for (int j = 0; j < size; j++) {
+						StackPane stack = new StackPane();
+						Rectangle square = new Rectangle();
+						square.setFill(Color.LIGHTBLUE);
+						square.setWidth(25);
+						square.setHeight(25);
+						stack.getChildren().addAll(square);
+						stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+						board.add(stack,i,j);
+						grid.get(i).add(stack);
+					}
+				}
+				
+				count = 0;
+				totalSeconds = 0;
+				seconds = 0;
+				minutes = 0;
+				model.setTime(0);
+				model.addObserver(this);
+				controller.updateMineBoard();
+				model.sendUpdate();
+			});
+			if (controller.isGameOver()) {
+				if (controller.isWon()) {
+					button.setVisible(true);
+				}
+			}
+			pane.add(label, 0, 0);
+			pane.add(button, 1, 0);
+			pane.setPadding(new Insets(8, 8, 8, 8));
+			pane.setMaxHeight(10);
+		// --- END SURVIVAL ---
+		} else {
+			Menu menu = new Menu("File");
+			menubar = new MenuBar();
+			MenuItem item = new MenuItem("New game");
+			MenuItem otherItem = new MenuItem("Menu");
+			menu.getItems().add(item);
+			menu.getItems().add(otherItem);
+			menubar.getMenus().add(menu);
+		
+		
 		
 		item.setOnAction(e -> { 
+			if(stopped) {
+				timeline.playFromStart();
+				stopped = false;
+			}
 			grid = new ArrayList<ArrayList<StackPane>>();
 			board.getChildren().clear();
-//			createGame(stage, true);
 			System.out.println("mineCount: " + mineCount);
 			System.out.println("size: " + size);
 			model = new MinesweeperModel(size, size, mineCount);
@@ -280,6 +365,7 @@ public class MinesweeperView extends Application implements Observer {
 				savedGameInfo.delete();
 				savedGameInfo = new File("save_game.dat");
 			};
+			
 			
 			board.getChildren().clear();
 			for (int i = 0; i < size; i++) {
@@ -308,7 +394,37 @@ public class MinesweeperView extends Application implements Observer {
 			model.sendUpdate();
 		});
 		
-		window.setTop(menubar);
+		otherItem.setOnAction(ev -> { 
+			timeline.stop();
+			stopped = true;
+			board = new GridPane();
+			time = new Label();
+			grid = new ArrayList<ArrayList<StackPane>>();
+			count = 0;
+			size = 0;
+			mineCount = 0;
+			minutes = 0;
+			seconds = 0;
+			totalSeconds = 0;
+			System.out.println("PB");
+			try {
+				if (!controller.isGameOver()) {
+					model.saveBoard();
+				}
+				start(stage);
+				System.out.println("PR");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				System.out.println("BR");
+				e1.printStackTrace();
+			}
+		});
+		}
+		if (isSurvival) {
+			window.setTop(pane);
+		} else {
+			window.setTop(menubar);
+		}
 		window.setCenter(board);
 		time.setText(String.valueOf(seconds));
 		window.setBottom(time);
@@ -326,8 +442,10 @@ public class MinesweeperView extends Application implements Observer {
 				model.setTime(totalSeconds);
 				model.saveBoard();
 			} });
-		
+//		EventHandler<MouseEvent> clickHan = new clickHandler();
+//		board.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHan);
 		board.setOnMouseClicked((event) -> {
+			if (!controller.isGameOver()) {
 			int x = getIndexFromPosition(event.getX());
 			int y = getIndexFromPosition(event.getY());
 			System.out.println("(x, y): " + x + ", " + y);
@@ -358,18 +476,79 @@ public class MinesweeperView extends Application implements Observer {
 					else {
 					model.updateCellState(y, x, "flagged");
 					}
-				}
+				}//
 			}
 			else {
 				model.updateCellState(y, x, "uncovered");
 				controller.clicked(x, y, size);
-				if (model.isMineLocation(y,x)) {
-					lose();
+				if (isSurvival) {
+					if (model.isMineLocation(y,x)) {
+						lose();
+					} else if (controller.isWon()) {
+						GridPane gpane = (GridPane) window.getChildren().get(0);
+						gpane.setPadding(new Insets(8, 8, 8, 8));
+						Button button = (Button) gpane.getChildren().get(1);
+						currLevel++;
+						Label label = new Label();
+						label.setText("Level " + currLevel);
+						label.setStyle("-fx-font: 24 arial;");
+						gpane.getChildren().set(0, label);
+						button.setVisible(true);
+						button.setOnMouseClicked((anotherEvent) -> {
+							button.setVisible(false);
+							grid = new ArrayList<ArrayList<StackPane>>();
+							board.getChildren().clear();
+//							createGame(stage, true);
+							mineCount = difficulties[difficultiesIterator];
+							size = levels[levelsIterator];
+							difficultiesIterator++;
+							levelsIterator++;
+							currLevel++;
+							System.out.println("mineCount: " + mineCount);
+							System.out.println("size: " + size);
+							model = new MinesweeperModel(size, size, mineCount);
+							controller = new MinesweeperController(model);
+							
+							board.getChildren().clear();
+							for (int i = 0; i < size; i++) {
+								grid.add(new ArrayList<StackPane>());
+								for (int j = 0; j < size; j++) {
+									StackPane stack = new StackPane();
+									Rectangle square = new Rectangle();
+									square.setFill(Color.LIGHTBLUE);
+									square.setWidth(25);
+									square.setHeight(25);
+									//stack.setPadding(new Insets(2,2,2,2));
+									stack.getChildren().addAll(square);
+									stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+									board.add(stack,i,j);
+									grid.get(i).add(stack);
+								}
+							}
+							
+							count = 0;
+							totalSeconds = 0;
+							seconds = 0;
+							minutes = 0;
+							model.setTime(0);
+							model.addObserver(this);
+							controller.updateMineBoard();
+							model.sendUpdate();
+						});
+					}
+				} else {
+					if (controller.isGameOver()) {
+						//board.removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
+					}
+					if (model.isMineLocation(y,x)) {
+						lose();
+					}
+					if (controller.isWon()) {
+						win();
+					}
 				}
-				if (controller.isWon()) {
-					win();
-				}
-			} // Will need to use controller, using model for demonstration purposes
+			}
+			}// Will need to use controller, using model for demonstration purposes
 		});
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
@@ -399,20 +578,10 @@ public class MinesweeperView extends Application implements Observer {
 					}));
                       
 		timeline.playFromStart();
+		stopped = false;
 		model.sendUpdate(); //
 	}
 	
-//	private class AnimationHandler implements EventHandler<ActionEvent> { // This handle method gets called every 100 ms
-//	@Override public void handle(ActionEvent event) {
-//		//System.out.println(String.valueOf(seconds));
-//		System.out.println("YYYY");
-//		seconds++;
-//		model.setTime(seconds);
-//		time.setText(String.valueOf(seconds));
-//		model.sendUpdate();
-//		stage.show();
-//		}  
-//	}
 	
 	/**
 	 * This private method takes a position on screen, and converts it to its associated index in the mine board. This method handles both X and Y coordinates since the board is square.
@@ -437,7 +606,6 @@ public class MinesweeperView extends Application implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		MinesweeperModel model = (MinesweeperModel) o;
-		// MinesweeperBoard board = (MinesweeperBoard) arg;
 		// update current state of board
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
@@ -476,6 +644,19 @@ public class MinesweeperView extends Application implements Observer {
 	 * This private method displays an alert in the case that the player wins at the end of the game.
 	 */
 	private void win() {
+		if (savedGameInfo.exists()) {
+			savedGameInfo.delete();
+		};
+		if (highScoreFile.exists()) {
+			System.out.println("TIME AT WIN:" +model.getTime());
+			model.saveHighScores(model.getTime());
+		}
+		else {
+			highScoreFile = new File("highScores.dat");
+			model.saveHighScores(model.getTime());
+		}
+		timeline.stop();
+		stopped = true;
 		Alert b = new Alert(Alert.AlertType.INFORMATION);
 		b.setTitle("Message");
 		b.setContentText("You uncovered all the correct mines. You Won!");
@@ -487,6 +668,11 @@ public class MinesweeperView extends Application implements Observer {
 	 * This private method displays an alert in the case that the player loses at the end of the game.
 	 */
 	private void lose() {
+		timeline.stop();
+		if (savedGameInfo.exists()) {
+			savedGameInfo.delete();
+		};
+		stopped = true;
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle("Message");
 		a.setContentText("You uncovered a mine. You lose!");
@@ -494,4 +680,46 @@ public class MinesweeperView extends Application implements Observer {
 		a.showAndWait();
 	}
 
+	private void showScoreBoard() {
+		Alert a = new Alert(Alert.AlertType.INFORMATION);
+		a.setTitle("High Scores");
+		String scores = "";
+		model = new MinesweeperModel();
+		if (model.getHighScores(highScoreFile) != null) {
+			 ArrayList<Integer> x = model.getHighScores(highScoreFile);
+			 Collections.sort(x);
+			 scores ="Current High Scores: \n";
+			 System.out.println(x.size());
+			 if (x.size() < 5) {
+				 for (int i = 0; i < x.size(); i++) {
+					 int minutes = x.get(i)/60;
+					 int seconds = x.get(i)%60;
+					 if (seconds < 10) {
+						 scores += (i+1) + ". " + minutes + ":0" + seconds + " \n";
+					 }
+					 else {
+					 scores += (i+1) + ". " + minutes + ":" + seconds + " \n";
+					 }
+				 } 
+			 }
+			 else {
+				 for (int i = 0; i < 5; i++) {
+					 int minutes = x.get(i)/60;
+					 int seconds = x.get(i)%60;
+					 if (seconds < 10) {
+						 scores += (i+1) + ". " + minutes + ":0" + seconds + " \n";
+					 }
+					 else {
+					 scores += (i+1) + ". " + minutes + ":" + seconds + " \n";
+					 }
+				 } 
+			 }
+		}
+		else {
+			scores = "No high scores yet, keep playing!";
+		}
+		a.setContentText(scores);
+		a.setHeaderText("Top 5 High Scores");
+		a.showAndWait();
+	}
 }

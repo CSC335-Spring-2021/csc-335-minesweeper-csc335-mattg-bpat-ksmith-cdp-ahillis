@@ -13,6 +13,7 @@ public class MinesweeperBoard implements Serializable {
 	private int[][] mineBoard;
 	private String[][] cellStatusBoard;
 	private Integer time;
+	private ArrayList<Integer> scoreInfo;
 	
 	public MinesweeperBoard(File file) {
 		FileInputStream gameInfoFile;
@@ -35,7 +36,9 @@ public class MinesweeperBoard implements Serializable {
 		}
 	}
 	
-	
+	public MinesweeperBoard() {
+		
+	}
 	
 	/**
 	 * This method saves the board object into save_game.dat
@@ -72,12 +75,62 @@ public class MinesweeperBoard implements Serializable {
         }
 	}
 	
+	public void saveHighScores(int time) {
+		String Filename = "highScores.dat";
+		getHighScores(new File(Filename));
+        // Serialization 
+        try
+        {   
+            //Saving of object in a file
+            FileOutputStream scoresFile = new FileOutputStream(Filename);
+            ObjectOutputStream scoresOut = new ObjectOutputStream(scoresFile);
+              
+            // Method for serialization of object
+            if (scoreInfo == null) {
+            	scoreInfo = new ArrayList<Integer>();
+            	scoreInfo.add(time);
+            }
+            else {
+            scoreInfo.add(time);
+            }
+            scoresOut.writeObject(scoreInfo);
+              
+            scoresOut.close();
+            scoresFile.close();
+  
+        }
+          
+        catch(IOException ex)
+        {
+            System.out.println("Scores IOException occured");
+        }
+	}
+	
+	public ArrayList<Integer> getHighScores(File scoresFile) {
+		FileInputStream scoresInfoFile;
+		try {
+			scoresInfoFile = new FileInputStream(scoresFile);
+			ObjectInputStream in = new ObjectInputStream(scoresInfoFile);
+			
+			scoreInfo = (ArrayList<Integer>) in.readObject();
+			System.out.println("SCORE INFO:"+scoreInfo);
+			in.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return scoreInfo;
+	}
+	
 	public MinesweeperBoard(int[][] currentMineBoard, String[][] currentStatusBoard, int seconds) {
 		mineBoard = currentMineBoard;
 		cellStatusBoard = currentStatusBoard;
 		time = Integer.valueOf(seconds);
 		
-	}
+	}//
 
 	public String[][] getStatusBoard() {
 		return cellStatusBoard;
