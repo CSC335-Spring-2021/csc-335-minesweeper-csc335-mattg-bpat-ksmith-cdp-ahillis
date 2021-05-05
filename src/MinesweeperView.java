@@ -501,7 +501,7 @@ public class MinesweeperView extends Application implements Observer {
 					else {
 					model.updateCellState(y, x, "flagged");
 					}
-				}
+				}//
 			}
 			else {
 				model.updateCellState(y, x, "uncovered");

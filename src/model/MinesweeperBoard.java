@@ -130,7 +130,7 @@ public class MinesweeperBoard implements Serializable {
 		cellStatusBoard = currentStatusBoard;
 		time = Integer.valueOf(seconds);
 		
-	}
+	}//
 
 	public String[][] getStatusBoard() {
 		return cellStatusBoard;

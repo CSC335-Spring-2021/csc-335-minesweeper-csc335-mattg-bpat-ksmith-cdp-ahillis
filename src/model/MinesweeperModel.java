@@ -47,7 +47,7 @@ public class MinesweeperModel extends Observable {
 				mines[r][c] = 0;
 				cellStates[r][c] = "covered";
 			}
-		}
+		}//
 		
 		Random rand = new Random();
 		int randomRow = rand.nextInt(rowAmount);
