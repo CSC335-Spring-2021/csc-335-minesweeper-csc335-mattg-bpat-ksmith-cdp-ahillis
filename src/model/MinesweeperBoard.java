@@ -9,12 +9,24 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * This class defines the Board for the Minesweeper package.
+ *
+ * @author 
+ */
+
+@SuppressWarnings("serial")
 public class MinesweeperBoard implements Serializable {
 	private int[][] mineBoard;
 	private String[][] cellStatusBoard;
 	private Integer time;
 	private ArrayList<Integer> scoreInfo;
 	
+	/**
+	 * Default constructor for the MinesweeperBoard class.
+	 * 
+	 * @param file the file to load into the local fields
+	 */
 	public MinesweeperBoard(File file) {
 		FileInputStream gameInfoFile;
 		try {
@@ -36,12 +48,21 @@ public class MinesweeperBoard implements Serializable {
 		}
 	}
 	
-	public MinesweeperBoard() {
-		
-	}
-	
 	/**
-	 * This method saves the board object into save_game.dat
+	 * Copy constructor for the MinesweeperBoard class.
+	 * 
+	 * @param currentMineBoard the current mine board to save locally
+	 * @param currentStatusBoard the current status board to save locally
+	 * @param seconds the current elapsed seconds to save locally
+	 */
+	public MinesweeperBoard(int[][] currentMineBoard, String[][] currentStatusBoard, int seconds) {
+		mineBoard = currentMineBoard;
+		cellStatusBoard = currentStatusBoard;
+		time = Integer.valueOf(seconds);
+	}
+
+	/**
+	 * This public method saves the board object into save_game.dat
 	 * 
 	 * With use of serialization and file/ObjectOutputStream, this object
 	 * is able to be encoded into the dat file and saved inside our project.
@@ -75,6 +96,14 @@ public class MinesweeperBoard implements Serializable {
         }
 	}
 	
+	/**
+	 * This public method saves the given time to the high scores save file.
+	 * 
+	 * With use of serialization and file/ObjectOutputStream, this object
+	 * is able to be encoded into the dat file and saved inside our project.
+	 * 
+	 * @param time the new time to add to the high scores
+	 */
 	public void saveHighScores(int time) {
 		String Filename = "highScores.dat";
 		getHighScores(new File(Filename));
@@ -106,6 +135,13 @@ public class MinesweeperBoard implements Serializable {
         }
 	}
 	
+	/**
+	 * This public method deserializes the given scoresFile into an array of integers.
+	 * 
+	 * @param scoresFile the File object to deserialize
+	 * 
+	 * @return an array of high scores from the given file
+	 */
 	public ArrayList<Integer> getHighScores(File scoresFile) {
 		FileInputStream scoresInfoFile;
 		try {
@@ -125,25 +161,38 @@ public class MinesweeperBoard implements Serializable {
 		return scoreInfo;
 	}
 	
-	public MinesweeperBoard(int[][] currentMineBoard, String[][] currentStatusBoard, int seconds) {
-		mineBoard = currentMineBoard;
-		cellStatusBoard = currentStatusBoard;
-		time = Integer.valueOf(seconds);
-		
-	}//
-
+	/**
+	 * This public method is a getter for the cellStatusBoard field
+	 * 
+	 * @return the cellStatusBoard field
+	 */
 	public String[][] getStatusBoard() {
 		return cellStatusBoard;
 	}
 	
+	/**
+	 * This public method is a getter for the getMineBoard field
+	 * 
+	 * @return the getMineBoard field
+	 */
 	public int[][] getMineBoard() {
 		return mineBoard;
 	}
 	
+	/**
+	 * This public method is a getter for the time field
+	 * 
+	 * @return the time field
+	 */
 	public int getTime() {
 		return time.intValue();
 	}
 	
+	/**
+	 * This public method is a setter for the time field
+	 * 
+	 * @param sec the updated time value
+	 */
 	public void setTime(int sec) {
 		time = Integer.valueOf(sec);
 	}
