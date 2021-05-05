@@ -444,7 +444,7 @@ public class MinesweeperView extends Application implements Observer {
 					savedGameInfo.delete();  
 					//savedCellGame.delete();
 				}
-				else {
+				else if (!isSurvival) {
 					model.setTime(totalSeconds);
 					model.saveBoard();
 				} });
