@@ -112,7 +112,6 @@ public class MinesweeperView extends Application implements Observer {
 		vbox.getChildren().add(welcome);
 		vbox.getChildren().add(newGame);
 		
-		//savedMineGame = new File("save_mine_game.dat");
 		savedGameInfo = new File("save_game.dat");
 		fileExists = savedGameInfo.exists();
 		highScoreFile = new File("highScores.dat");
@@ -253,31 +252,6 @@ public class MinesweeperView extends Application implements Observer {
 				seconds = seconds - 60;
 			}
 			System.out.println("here");
-//			timeline = new Timeline();
-//			timeline.setCycleCount(Timeline.INDEFINITE);
-//			timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
-//	                    // KeyFrame event handler
-//						@Override
-//	                    public void handle(ActionEvent actionEvent) {
-//							System.out.println("AA");
-//	                        seconds++;
-//	                        totalSeconds++;
-//	                        if (seconds == 60) {
-//	                        	minutes++;
-//	                        	seconds = 0;
-//	                        }
-//	                        DecimalFormat formatter = new DecimalFormat("00");
-//	                        String secFormatted = formatter.format(seconds);
-//	                        String minFormatted = formatter.format(minutes);
-//	                        time.setText("Timer " + minFormatted + ":" + secFormatted);
-//	                        model.setTime(totalSeconds);
-//	                        model.sendUpdate();
-//	                        }
-//
-//						}));
-//	         System.out.println("there");          
-//			timeline.playFromStart(); 
-//		}
 		}
 		else {
 			model = new MinesweeperModel(size, size, mineCount); 
@@ -298,7 +272,6 @@ public class MinesweeperView extends Application implements Observer {
 				square.setFill(Color.LIGHTBLUE);
 				square.setWidth(25);
 				square.setHeight(25);
-				//stack.setPadding(new Insets(2,2,2,2));
 				stack.getChildren().addAll(square);
 				stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 				board.add(stack,i,j);
@@ -320,7 +293,6 @@ public class MinesweeperView extends Application implements Observer {
 			button.setOnMouseClicked((event) -> {
 				grid = new ArrayList<ArrayList<StackPane>>();
 				board.getChildren().clear();
-//				createGame(stage, true);
 				mineCount = difficulties[difficultiesIterator];
 				size = levels[levelsIterator];
 				difficultiesIterator++;
@@ -340,7 +312,6 @@ public class MinesweeperView extends Application implements Observer {
 						square.setFill(Color.LIGHTBLUE);
 						square.setWidth(25);
 						square.setHeight(25);
-						//stack.setPadding(new Insets(2,2,2,2));
 						stack.getChildren().addAll(square);
 						stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 						board.add(stack,i,j);
@@ -385,7 +356,6 @@ public class MinesweeperView extends Application implements Observer {
 			}
 			grid = new ArrayList<ArrayList<StackPane>>();
 			board.getChildren().clear();
-//			createGame(stage, true);
 			System.out.println("mineCount: " + mineCount);
 			System.out.println("size: " + size);
 			model = new MinesweeperModel(size, size, mineCount);
@@ -612,73 +582,6 @@ public class MinesweeperView extends Application implements Observer {
 		model.sendUpdate(); //
 	}
 	
-//	private class clickHandler implements EventHandler<MouseEvent> {
-//
-//		@Override
-//		public void handle(MouseEvent event) {
-//			System.out.println("checked");
-//			int x = getIndexFromPosition(event.getX());
-//			int y = getIndexFromPosition(event.getY());
-//			System.out.println("(x, y): " + x + ", " + y);
-//			if (count == 0) {
-//				//seconds = 50;
-//				model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
-//				controller = new MinesweeperController(model);// add model to () when its more done
-//				//while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), y, x)) {
-//				while (model.isMineLocation(y, x)) {
-//					model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
-//					controller = new MinesweeperController(model);// add model to () when its more done
-//				}
-//				controller.updateMineBoard();
-//				count++;
-//				
-//				System.out.println("UP");
-//			}
-//			
-//			
-//			// TODO: Complete turn, including mine checking
-//			
-//			if (event.getButton() == MouseButton.SECONDARY) {
-//				if (! model.cellStateAtCoords(y, x).equals("uncovered")) {
-//					if (model.cellStateAtCoords(y, x).equals("flagged")) {
-//						model.updateCellState(y, x, "covered");
-//					}
-//					else {
-//					model.updateCellState(y, x, "flagged");
-//					}
-//				}
-//			}
-//			else {
-//				model.updateCellState(y, x, "uncovered");
-//				controller.clicked(x, y, size);
-//				if (controller.isGameOver()) {
-//					System.out.println("UHOH");
-//					board.removeEventHandler(MouseEvent.MOUSE_CLICKED, this);
-//				}
-//				if (model.isMineLocation(y,x)) {
-//					lose();
-//				}
-//				if (controller.isWon()) {
-//					win();
-//				}
-//			}
-//			//model.sendUpdate();
-//			
-//		}
-//	
-//	}
-	
-//	private class AnimationHandler implements EventHandler<ActionEvent> { // This handle method gets called every 100 ms
-//	@Override public void handle(ActionEvent event) {
-//		//System.out.println(String.valueOf(seconds));
-//		System.out.println("YYYY");
-//		seconds++;
-//		model.setTime(seconds);
-//		time.setText(String.valueOf(seconds));
-//		model.sendUpdate();
-//		stage.show();
-//		}  
-//	}
 	
 	/**
 	 * This private method takes a position on screen, and converts it to its associated index in the mine board. This method handles both X and Y coordinates since the board is square.
@@ -703,7 +606,6 @@ public class MinesweeperView extends Application implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		MinesweeperModel model = (MinesweeperModel) o;
-		// MinesweeperBoard board = (MinesweeperBoard) arg;
 		// update current state of board
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
@@ -816,7 +718,6 @@ public class MinesweeperView extends Application implements Observer {
 		else {
 			scores = "No high scores yet, keep playing!";
 		}
-		//"Current High Scores: \n1. Kyle \n2. Brendan \n3. Matt"
 		a.setContentText(scores);
 		a.setHeaderText("Top 5 High Scores");
 		a.showAndWait();

@@ -89,27 +89,6 @@ public class MinesweeperModel extends Observable {
 			}
 		}
 		
-//		for(int r = 0; r < totalRows; r++) {
-//			for(int c = 0; c < totalCols; c++) {
-//				mines[r][c] = 0;
-//				cellStates[r][c] = "covered";
-//			}
-//		}
-		
-//		Random rand = new Random();
-//		int randomRow = rand.nextInt(rowAmount);
-//		int randomCol = rand.nextInt(colAmount);
-//		for(int i = 0; i < bombAmount; i++) {
-//			while(isMineLocation(randomRow, randomCol) == true) {
-//				randomRow = rand.nextInt(rowAmount);
-//				randomCol = rand.nextInt(colAmount);
-//			}
-//			mines[randomRow][randomCol] = -1;
-//			int[] coord = new int[2];
-//			coord[0] = randomRow;
-//			coord[1] = randomCol;
-//			mineLocations.add(coord);
-//		}
 	}
 	
 	public MinesweeperModel() {
