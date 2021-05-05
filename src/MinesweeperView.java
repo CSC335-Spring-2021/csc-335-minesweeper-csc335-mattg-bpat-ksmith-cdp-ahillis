@@ -65,8 +65,15 @@ public class MinesweeperView extends Application implements Observer {
 	private File savedGameInfo;
 	private boolean fileExists;
 	private ArrayList<ArrayList<StackPane>> grid = new ArrayList<ArrayList<StackPane>>();
-	private int[] levels = {15, 20, 15, 20, 25, 20, 25};
+	
+	// Survival fields
+	private int[] levels = {15, 20, 15, 20, 25, 25};
+	private int[] difficulties = {15, 20, 25};
 	private int levelsIterator = 0;
+	private int difficultiesIterator = 0;
+	private int currLevel = 0;
+	private boolean isSurvival = false;
+	
 	int count = 0;
 	int size = 0;
 	int mineCount = 0;
@@ -125,7 +132,7 @@ public class MinesweeperView extends Application implements Observer {
 		if (fileExists) {
 			scene = new Scene (startPane, 200, 150);
 		} else {
-			scene = new Scene (startPane, 200, 175);
+			scene = new Scene (startPane, 200, 200);
 		}
 		stage.setScene(scene);
 		stage.show();
@@ -133,7 +140,12 @@ public class MinesweeperView extends Application implements Observer {
 	
 	private void createSurvival(Stage stage) {
 		// TODO Auto-generated method stub
-		
+		mineCount = difficulties[difficultiesIterator];
+		size = levels[levelsIterator];
+		difficultiesIterator++;
+		levelsIterator++;
+		isSurvival = true;
+		createGame(stage, true);
 	}
 
 	private void selectSize(Stage stage) {
@@ -277,15 +289,73 @@ public class MinesweeperView extends Application implements Observer {
 				grid.get(i).add(stack);
 			}
 		}
-		
-		Menu menu = new Menu("File");
-		MenuBar menubar = new MenuBar();
-		MenuItem item = new MenuItem("New game");
-		MenuItem otherItem = new MenuItem("Menu");
-		menu.getItems().add(item);
-		menu.getItems().add(otherItem);
-		menubar.getMenus().add(menu);
 		BorderPane window = new BorderPane();
+		MenuBar menubar = null;
+		GridPane pane = null;
+		// --- SURVIVAL ---
+		if (isSurvival) {
+			pane = new GridPane();
+			Label label = new Label();
+			label.setText("Level " + currLevel++);
+			Button button = new Button();
+			button.setVisible(false);
+			button.setOnMouseClicked((event) -> {
+				grid = new ArrayList<ArrayList<StackPane>>();
+				board.getChildren().clear();
+//				createGame(stage, true);
+				mineCount = difficulties[difficultiesIterator];
+				size = levels[levelsIterator];
+				difficultiesIterator++;
+				levelsIterator++;
+				System.out.println("mineCount: " + mineCount);
+				System.out.println("size: " + size);
+				model = new MinesweeperModel(size, size, mineCount);
+				controller = new MinesweeperController(model);
+				
+				board.getChildren().clear();
+				for (int i = 0; i < size; i++) {
+					grid.add(new ArrayList<StackPane>());
+					for (int j = 0; j < size; j++) {
+						StackPane stack = new StackPane();
+						Rectangle square = new Rectangle();
+						square.setFill(Color.LIGHTBLUE);
+						square.setWidth(25);
+						square.setHeight(25);
+						//stack.setPadding(new Insets(2,2,2,2));
+						stack.getChildren().addAll(square);
+						stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+						board.add(stack,i,j);
+						grid.get(i).add(stack);
+					}
+				}
+				
+				count = 0;
+				totalSeconds = 0;
+				seconds = 0;
+				minutes = 0;
+				model.setTime(0);
+				model.addObserver(this);
+				controller.updateMineBoard();
+				model.sendUpdate();
+			});
+			if (controller.isGameOver()) {
+				if (controller.isWon()) {
+					button.setVisible(true);
+				}
+			}
+			pane.add(label, 0, 0);
+			pane.add(button, 0, 1);
+		// --- END SURVIVAL ---
+		} else {
+			Menu menu = new Menu("File");
+			menubar = new MenuBar();
+			MenuItem item = new MenuItem("New game");
+			MenuItem otherItem = new MenuItem("Menu");
+			menu.getItems().add(item);
+			menu.getItems().add(otherItem);
+			menubar.getMenus().add(menu);
+		
+		
 		
 		item.setOnAction(e -> { 
 			if(stopped) {
@@ -358,8 +428,12 @@ public class MinesweeperView extends Application implements Observer {
 				e1.printStackTrace();
 			}
 		});
-		
-		window.setTop(menubar);
+		}
+		if (isSurvival) {
+			window.setTop(pane);
+		} else {
+			window.setTop(menubar);
+		}
 		window.setCenter(board);
 		time.setText(String.valueOf(seconds));
 		window.setBottom(time);
@@ -416,14 +490,20 @@ public class MinesweeperView extends Application implements Observer {
 			else {
 				model.updateCellState(y, x, "uncovered");
 				controller.clicked(x, y, size);
-				if (controller.isGameOver()) {
-					//board.removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
-				}
-				if (model.isMineLocation(y,x)) {
-					lose();
-				}
-				if (controller.isWon()) {
-					win();
+				if (isSurvival) {
+					GridPane gpane = (GridPane) window.getChildren().get(0);
+					Button button = (Button) gpane.getChildren().get(1);
+					button.setVisible(true);
+				} else {
+					if (controller.isGameOver()) {
+						//board.removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
+					}
+					if (model.isMineLocation(y,x)) {
+						lose();
+					}
+					if (controller.isWon()) {
+						win();
+					}
 				}
 			}
 			}// Will need to use controller, using model for demonstration purposes
