@@ -146,9 +146,9 @@ public class MinesweeperView extends Application implements Observer {
 		});
 		Scene scene;
 		if (fileExists) {
-			scene = new Scene (startPane, 200, 150);
-		} else {
 			scene = new Scene (startPane, 200, 200);
+		} else {
+			scene = new Scene (startPane, 200, 175);
 		}
 		stage.setScene(scene);
 		stage.show();
