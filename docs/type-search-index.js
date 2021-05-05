@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"Minesweeper"},{"p":"model","l":"MinesweeperBoard"},{"p":"controller","l":"MinesweeperController"},{"p":"model","l":"MinesweeperModel"},{"p":"<Unnamed>","l":"MinesweeperView"}];updateSearchResults();
