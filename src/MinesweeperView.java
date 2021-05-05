@@ -1,6 +1,7 @@
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
@@ -62,6 +63,8 @@ public class MinesweeperView extends Application implements Observer {
 	private Label time = new Label();
 	//private File savedMineGame;
 	//private File savedCellGame;
+	private File highScoreFile;
+	private boolean highScoresExists;
 	private File savedGameInfo;
 	private boolean fileExists;
 	private ArrayList<ArrayList<StackPane>> grid = new ArrayList<ArrayList<StackPane>>();
@@ -97,6 +100,8 @@ public class MinesweeperView extends Application implements Observer {
 		newGame.setText("New Game");
 		Button loadGame = new Button();
 		loadGame.setText("Load Game");
+		Button highScores = new Button();
+		highScores.setText("High Scores");
 		Button survival = new Button();
 		survival.setText("Survival (Wow Factor)");
 		Label welcome = new Label("Welcome to Minesweeper");
@@ -110,8 +115,14 @@ public class MinesweeperView extends Application implements Observer {
 		//savedMineGame = new File("save_mine_game.dat");
 		savedGameInfo = new File("save_game.dat");
 		fileExists = savedGameInfo.exists();
+		highScoreFile = new File("highScores.dat");
+		highScoresExists = highScoreFile.exists();
 		if (fileExists) {
 			vbox.getChildren().add(loadGame);
+			
+		}
+		if (highScoresExists) {
+			vbox.getChildren().add(highScores);
 			
 		}
 		vbox.getChildren().add(survival);
@@ -125,6 +136,11 @@ public class MinesweeperView extends Application implements Observer {
 			count = 1;
 			createGame(stage, false);
 		});
+		
+		highScores.setOnMouseClicked((event) -> {
+			showScoreBoard();
+		});
+
 		survival.setOnMouseClicked((event) -> {
 			createSurvival(stage);
 		});
@@ -673,6 +689,14 @@ public class MinesweeperView extends Application implements Observer {
 		if (savedGameInfo.exists()) {
 			savedGameInfo.delete();
 		};
+		if (highScoreFile.exists()) {
+			System.out.println("TIME AT WIN:" +model.getTime());
+			model.saveHighScores(model.getTime());
+		}
+		else {
+			highScoreFile = new File("highScores.dat");
+			model.saveHighScores(model.getTime());
+		}
 		timeline.stop();
 		stopped = true;
 		Alert b = new Alert(Alert.AlertType.INFORMATION);
@@ -698,4 +722,40 @@ public class MinesweeperView extends Application implements Observer {
 		a.showAndWait();
 	}
 
+	private void showScoreBoard() {
+		Alert a = new Alert(Alert.AlertType.INFORMATION);
+		a.setTitle("High Scores");
+		String scores = "";
+		model = new MinesweeperModel();
+		if (model.getHighScores(highScoreFile) != null) {
+			 ArrayList<Integer> x = model.getHighScores(highScoreFile);
+			 Collections.sort(x);
+			 scores ="Current High Scores: \n";
+			 System.out.println(x.size());
+			 if (x.size() < 5) {
+				 for (int i = 0; i < x.size(); i++) {
+					 int minutes = x.get(i)/60;
+					 int seconds = x.get(i)%60;
+					 if (seconds < 10) {
+						 scores += (i+1) + ". " + minutes + ":0" + seconds + " \n";
+					 }
+					 else {
+					 scores += (i+1) + ". " + minutes + ":" + seconds + " \n";
+					 }
+				 } 
+			 }
+			 else {
+				 for (int i = 0; i < 5; i++) {
+					 scores += (i+1) + ". " + x.get(i) + " \n";
+				 } 
+			 }
+		}
+		else {
+			scores = "No high scores yet, keep playing!";
+		}
+		//"Current High Scores: \n1. Kyle \n2. Brendan \n3. Matt"
+		a.setContentText(scores);
+		a.setHeaderText("Top 5 High Scores");
+		a.showAndWait();
+	}
 }

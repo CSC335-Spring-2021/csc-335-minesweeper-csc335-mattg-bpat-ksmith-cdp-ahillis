@@ -1,6 +1,7 @@
 package model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Random;
@@ -110,6 +111,11 @@ public class MinesweeperModel extends Observable {
 //			mineLocations.add(coord);
 //		}
 	}
+	
+	public MinesweeperModel() {
+		boardObject = new MinesweeperBoard();
+	}
+	
 	public void setTime(int secs) {
 		seconds = secs;
 	}
@@ -306,5 +312,14 @@ public class MinesweeperModel extends Observable {
 	public void saveBoard() {
 		boardObject.setTime(seconds);
 		boardObject.saveboard();
+	}
+	
+
+	public ArrayList<Integer> getHighScores(File highScoreFile) {
+		return boardObject.getHighScores(highScoreFile);
+	}
+	
+	public void saveHighScores(int time) {
+		boardObject.saveHighScores(time);
 	}
 }
