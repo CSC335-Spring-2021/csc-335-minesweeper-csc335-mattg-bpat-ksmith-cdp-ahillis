@@ -66,6 +66,13 @@ public class MinesweeperModel extends Observable {
 		boardObject = new MinesweeperBoard(mines, cellStates, seconds);
 	}
 	
+	/**
+	 * The saved game constructor for MinesweeperModel
+	 * 
+	 * This constructor is used to load a saved game into the model class. 
+	 * 
+	 * @param gameInfo the saved game file to load
+	 */
 	public MinesweeperModel(File gameInfo) {
 		boardObject = new MinesweeperBoard(gameInfo);
 		mineLocations = new HashSet<int[]>();
@@ -91,10 +98,18 @@ public class MinesweeperModel extends Observable {
 		
 	}
 	
+	/**
+	 * The empty constructor for MinesweeperModel
+	 */
 	public MinesweeperModel() {
 		boardObject = new MinesweeperBoard();
 	}
 	
+	/**
+	 * This public method is the setter for the seconds field.
+	 * 
+	 * @param secs the updated seconds value
+	 */
 	public void setTime(int secs) {
 		seconds = secs;
 	}
@@ -225,6 +240,11 @@ public class MinesweeperModel extends Observable {
 		return totalBombs;
 	}
 	
+	/**
+	 * This public method is a getter for the seconds field used to track the total elapsed seconds since game initiation. 
+	 * 
+	 * @return the elapsed time
+	 */
 	public int getTime() {
 		return seconds;
 	}
@@ -288,16 +308,31 @@ public class MinesweeperModel extends Observable {
 		}
 	}
 	
+	/**
+	 * This public method calls the saveboard() method on the underlying MinesweeperBoard object.
+	 */
 	public void saveBoard() {
 		boardObject.setTime(seconds);
 		boardObject.saveboard();
 	}
 	
 
+	/**
+	 * This public method returns the ArrayList of high scores stored in the given highScoreFile.
+	 * 
+	 * @param highScoreFile the file object to deserialize
+	 * 
+	 * @return an array of high scores
+	 */
 	public ArrayList<Integer> getHighScores(File highScoreFile) {
 		return boardObject.getHighScores(highScoreFile);
 	}
 	
+	/**
+	 * This public method calls the saveHighScores() method on the underlying MinesweeperBoard object.
+	 * 
+	 * @param time the current elapsed time 
+	 */
 	public void saveHighScores(int time) {
 		boardObject.saveHighScores(time);
 	}
