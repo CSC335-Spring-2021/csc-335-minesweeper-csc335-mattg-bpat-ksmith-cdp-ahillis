@@ -260,7 +260,7 @@ public class MinesweeperView extends Application implements Observer {
 //
 //						}));
 //	         System.out.println("there");          
-//			timeline.playFromStart();
+//			timeline.playFromStart(); 
 //		}
 		}
 		else {
