@@ -61,8 +61,6 @@ public class MinesweeperView extends Application implements Observer {
 	private MinesweeperController controller;
 	private GridPane board = new GridPane();
 	private Label time = new Label();
-	//private File savedMineGame;
-	//private File savedCellGame;
 	private File highScoreFile;
 	private boolean highScoresExists;
 	private File savedGameInfo;
@@ -91,6 +89,7 @@ public class MinesweeperView extends Application implements Observer {
 	/**
 	 * This method controls the GUI View (in MVC) for the Minesweeper program.
 	 * 
+	 * This method presents the user with a Welcome screen, where they can open a new game, load a previous game or play the survival mode.
 	 */
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -153,8 +152,14 @@ public class MinesweeperView extends Application implements Observer {
 		stage.show();
 	}
 	
+	/**
+	 * This private method initiates a survival-style game, where the difficultly increases with each completed level. 
+	 * 
+	 * This method is initiated by a button click on the Welcome screen.
+	 * 
+	 * @param stage the stage to create the survival game on
+	 */
 	private void createSurvival(Stage stage) {
-		// TODO Auto-generated method stub
 		mineCount = difficulties[difficultiesIterator];
 		size = levels[levelsIterator];
 		difficultiesIterator++;
@@ -163,6 +168,13 @@ public class MinesweeperView extends Application implements Observer {
 		createGame(stage, true);
 	}
 
+	/**
+	 * This private method changes the stage to display three size options: small, medium, and large.
+	 * 
+	 * Once a size is selected, the user is then prompted for the difficulty by selectDiff.
+	 * 
+	 * @param stage the stage to prompt the user for size on
+	 */
 	private void selectSize(Stage stage) {
 		BorderPane sizePane = new BorderPane();
 		Button small = new Button();
@@ -200,6 +212,11 @@ public class MinesweeperView extends Application implements Observer {
 		stage.show();
 	}
 	
+	/**
+	 * This private method changes the stage to display three difficulty options: easy, medium, and hard. This choice impacts the number of mines generated per board.
+	 * 
+	 * @param stage the stage to prompt the user for difficulty on
+	 */
 	private void selectDiff(Stage stage) {
 		BorderPane diffPane = new BorderPane();
 		Button easy = new Button();
@@ -239,6 +256,12 @@ public class MinesweeperView extends Application implements Observer {
 		stage.show();
 	}
 	
+	/**
+	 * This private method initiates the game, first by drawing the board, then by adding the event handlers for the game logic. This method also handles the Wow Factor feature, Survival Mode.
+	 * 
+	 * @param stage the stage to draw the board onto
+	 * @param newGameBool whether the game should be new or load from a save file.
+	 */
 	private void createGame(Stage stage, boolean newGameBool) {
 		if (!newGameBool) {
 			model = new MinesweeperModel(savedGameInfo);
@@ -257,7 +280,7 @@ public class MinesweeperView extends Application implements Observer {
 			model = new MinesweeperModel(size, size, mineCount); 
 		}
 		model.addObserver(this);
-		controller = new MinesweeperController(model); // add model to () when its more done
+		controller = new MinesweeperController(model); 
 		stage.setTitle("Minesweeper");
 		model.printBoards();
 		BackgroundFill backgroundTan = new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY) ;
@@ -376,7 +399,6 @@ public class MinesweeperView extends Application implements Observer {
 					square.setFill(Color.LIGHTBLUE);
 					square.setWidth(25);
 					square.setHeight(25);
-					//stack.setPadding(new Insets(2,2,2,2));
 					stack.getChildren().addAll(square);
 					stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 					board.add(stack,i,j);
@@ -414,7 +436,6 @@ public class MinesweeperView extends Application implements Observer {
 				start(stage);
 				System.out.println("PR");
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				System.out.println("BR");
 				e1.printStackTrace();
 			}
@@ -428,35 +449,29 @@ public class MinesweeperView extends Application implements Observer {
 		window.setCenter(board);
 		time.setText(String.valueOf(seconds));
 		window.setBottom(time);
-		//Scene scene = new Scene (window, 556, 584);
 		Scene scene = new Scene (window, size * 27 + 16, size * 27 + 59);
 		stage.setScene(scene);
 		stage.show();
 		stage.setOnCloseRequest(e -> {
-			
 			if (controller.isGameOver()) {
 				savedGameInfo.delete();  
-				//savedCellGame.delete();
 			}
 			else {
 				model.setTime(totalSeconds);
 				model.saveBoard();
-			} });
-//		EventHandler<MouseEvent> clickHan = new clickHandler();
-//		board.addEventHandler(MouseEvent.MOUSE_CLICKED, clickHan);
+			} 
+		});
 		board.setOnMouseClicked((event) -> {
 			if (!controller.isGameOver()) {
 			int x = getIndexFromPosition(event.getX());
 			int y = getIndexFromPosition(event.getY());
 			System.out.println("(x, y): " + x + ", " + y);
 			if (count == 0) {
-				//seconds = 50;
-				model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
-				controller = new MinesweeperController(model);// add model to () when its more done
-				//while (controller.isMine(model.returnMinesBoard(), model.returnCellStateBoard(), y, x)) {
+				model = new MinesweeperModel(size, size, mineCount);
+				controller = new MinesweeperController(model);
 				while (model.isMineLocation(y, x)) {
-					model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
-					controller = new MinesweeperController(model);// add model to () when its more done
+					model = new MinesweeperModel(size, size, mineCount); 
+					controller = new MinesweeperController(model);
 				}
 				model.addObserver(this);
 				controller.updateMineBoard();
@@ -464,9 +479,6 @@ public class MinesweeperView extends Application implements Observer {
 				
 				System.out.println("UP");
 			}
-			
-			
-			// TODO: Complete turn, including mine checking
 			
 			if (event.getButton() == MouseButton.SECONDARY) {
 				if (! model.cellStateAtCoords(y, x).equals("uncovered")) {
@@ -476,7 +488,7 @@ public class MinesweeperView extends Application implements Observer {
 					else {
 					model.updateCellState(y, x, "flagged");
 					}
-				}//
+				}
 			}
 			else {
 				model.updateCellState(y, x, "uncovered");
@@ -498,7 +510,6 @@ public class MinesweeperView extends Application implements Observer {
 							button.setVisible(false);
 							grid = new ArrayList<ArrayList<StackPane>>();
 							board.getChildren().clear();
-//							createGame(stage, true);
 							mineCount = difficulties[difficultiesIterator];
 							size = levels[levelsIterator];
 							difficultiesIterator++;
@@ -518,7 +529,6 @@ public class MinesweeperView extends Application implements Observer {
 									square.setFill(Color.LIGHTBLUE);
 									square.setWidth(25);
 									square.setHeight(25);
-									//stack.setPadding(new Insets(2,2,2,2));
 									stack.getChildren().addAll(square);
 									stack.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 									board.add(stack,i,j);
@@ -537,9 +547,6 @@ public class MinesweeperView extends Application implements Observer {
 						});
 					}
 				} else {
-					if (controller.isGameOver()) {
-						//board.removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
-					}
 					if (model.isMineLocation(y,x)) {
 						lose();
 					}
@@ -548,7 +555,7 @@ public class MinesweeperView extends Application implements Observer {
 					}
 				}
 			}
-			}// Will need to use controller, using model for demonstration purposes
+			}
 		});
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
@@ -591,11 +598,8 @@ public class MinesweeperView extends Application implements Observer {
 	 * @return the associated index
 	 */
 	private int getIndexFromPosition(double position) {
-		// minus 8 for inset
-		int aligned = (int) position - 8;
-		
-		// 27 is the width of each square
-		return aligned / 27;
+		int aligned = (int) position - 8; // minus 8 for inset
+		return aligned / 27; // 27 is the width of each square
 	}
 	
 	/**
@@ -680,6 +684,9 @@ public class MinesweeperView extends Application implements Observer {
 		a.showAndWait();
 	}
 
+	/**
+	 * This private method displays a new Alert window with high scores. High scores are stored in the highScoreFile File field.
+	 */
 	private void showScoreBoard() {
 		Alert a = new Alert(Alert.AlertType.INFORMATION);
 		a.setTitle("High Scores");
