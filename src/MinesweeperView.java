@@ -478,7 +478,7 @@ public class MinesweeperView extends Application implements Observer {
 			if (event.getButton() == MouseButton.SECONDARY) {
 				if (! model.cellStateAtCoords(y, x).equals("uncovered")) {
 					if (model.cellStateAtCoords(y, x).equals("flagged")) {
-						model.updateCellState(y, x, "covered");
+						model.updateCellState(y, x, "covered"); 
 					}
 					else {
 					model.updateCellState(y, x, "flagged");
