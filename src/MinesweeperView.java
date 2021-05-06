@@ -243,13 +243,11 @@ public class MinesweeperView extends Application implements Observer {
 			size = model.totalCols();
 			mineCount = model.totalBombs();
 			totalSeconds = model.getTime();
-			System.out.println(totalSeconds);
 			seconds = totalSeconds;
 			while (seconds > 59) {
 				minutes++;
 				seconds = seconds - 60;
 			}
-			System.out.println("here");
 		}
 		else {
 			model = new MinesweeperModel(size, size, mineCount); 
@@ -257,7 +255,6 @@ public class MinesweeperView extends Application implements Observer {
 		model.addObserver(this);
 		controller = new MinesweeperController(model); // add model to () when its more done
 		stage.setTitle("Minesweeper");
-		model.printBoards();
 		BackgroundFill backgroundTan = new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY) ;
 		Background background = new Background(backgroundTan);
 		board.setBackground(background);
@@ -297,8 +294,6 @@ public class MinesweeperView extends Application implements Observer {
 				mineCount = difficulties[levelsIterator];
 				size = levels[levelsIterator];
 				currLevel++;
-				System.out.println("mineCount: " + mineCount);
-				System.out.println("size: " + size);
 				model = new MinesweeperModel(size, size, mineCount);
 				controller = new MinesweeperController(model);
 				
@@ -355,12 +350,9 @@ public class MinesweeperView extends Application implements Observer {
 			}
 			grid = new ArrayList<ArrayList<StackPane>>();
 			board.getChildren().clear();
-			System.out.println("mineCount: " + mineCount);
-			System.out.println("size: " + size);
 			model = new MinesweeperModel(size, size, mineCount);
 			controller = new MinesweeperController(model);
 			if (savedGameInfo.exists()) {
-				System.out.println("Hi");
 				savedGameInfo.delete();
 				savedGameInfo = new File("save_game.dat");
 			};
@@ -406,16 +398,12 @@ public class MinesweeperView extends Application implements Observer {
 			minutes = 0;
 			seconds = 0;
 			totalSeconds = 0;
-			System.out.println("PB");
 			try {
 				if (!controller.isGameOver()) {
 					model.saveBoard();
 				}
 				start(stage);
-				System.out.println("PR");
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				System.out.println("BR");
 				e1.printStackTrace();
 			}
 		});
@@ -455,7 +443,6 @@ public class MinesweeperView extends Application implements Observer {
 			if (!controller.isGameOver()) {
 			int x = getIndexFromPosition(event.getX());
 			int y = getIndexFromPosition(event.getY());
-			System.out.println("(x, y): " + x + ", " + y);
 			if (count == 0) {
 				//seconds = 50;
 				model = new MinesweeperModel(size, size, mineCount); // 20x20, with 40 bombs (~10% of the board)
@@ -469,7 +456,6 @@ public class MinesweeperView extends Application implements Observer {
 				controller.updateMineBoard();
 				count++;
 				
-				System.out.println("UP");
 			}
 			
 			
@@ -516,11 +502,8 @@ public class MinesweeperView extends Application implements Observer {
 							board.getChildren().clear();
 //							createGame(stage, true);
 							levelsIterator++;
-							System.out.println("LEVELS_ITERATOR: " + levelsIterator);
 							mineCount = difficulties[levelsIterator];
 							size = levels[levelsIterator];
-							System.out.println("mineCount: " + mineCount);
-							System.out.println("size: " + size);
 							model = new MinesweeperModel(size, size, mineCount);
 							controller = new MinesweeperController(model);
 							
@@ -574,18 +557,14 @@ public class MinesweeperView extends Application implements Observer {
                     // KeyFrame event handler
 					@Override
                     public void handle(ActionEvent actionEvent) {
-						System.out.println("BB");
                         seconds++;
                         totalSeconds++;
-                        System.out.println(seconds);
                         DecimalFormat formatter = new DecimalFormat("00");
                         String secFormatted = formatter.format(seconds);
                         String minFormatted = formatter.format(minutes);
                         if (seconds == 60) {
-                        	System.out.println("MINUTE: " + minutes);
                         	minutes++;
                         	seconds = 0;
-                        	System.out.println("SECONDS NOW: " +seconds);
                         	secFormatted = formatter.format(seconds);
                         }
                         time.setText("Timer " + minFormatted + ":" + secFormatted);
@@ -680,7 +659,6 @@ public class MinesweeperView extends Application implements Observer {
 			savedGameInfo.delete();
 		};
 		if (highScoreFile.exists()) {
-			System.out.println("TIME AT WIN:" +model.getTime());
 			model.saveHighScores(model.getTime());
 		}
 		else {
@@ -721,7 +699,6 @@ public class MinesweeperView extends Application implements Observer {
 			 ArrayList<Integer> x = model.getHighScores(highScoreFile);
 			 Collections.sort(x);
 			 scores ="Current High Scores: \n";
-			 System.out.println(x.size());
 			 if (x.size() < 5) {
 				 for (int i = 0; i < x.size(); i++) {
 					 int minutes = x.get(i)/60;

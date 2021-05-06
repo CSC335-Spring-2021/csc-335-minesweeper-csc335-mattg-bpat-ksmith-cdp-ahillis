@@ -81,8 +81,6 @@ public class MinesweeperModel extends Observable {
 		seconds = boardObject.getTime();
 		totalRows = mines.length;
 		totalCols = mines[0].length;
-		System.out.println(String.valueOf(totalRows));
-		System.out.println(String.valueOf(totalCols));
 		printBoards();
 		totalBombs = 0;
 		for(int i = 0; i < mines.length; i++) {

@@ -58,7 +58,6 @@ public class MinesweeperController {
 				}
 			}
 		}
-		model.printBoards();
 	}
 	
 	/**
